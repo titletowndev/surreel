@@ -5,6 +5,7 @@ import { useData } from "@/state/data";
 import { TmdbSearch } from "@/components/screening/TmdbSearch";
 import { Poster } from "@/components/ui/primitives";
 import { getMovieMeta, type MovieMeta, type TmdbSearchResult } from "@/lib/tmdb";
+import { searchTheaters, inferChain, type PlaceTheater } from "@/lib/places";
 import {
   SCREEN_FORMATS,
   CHAINS,
@@ -319,8 +320,8 @@ export function AddEditScreening() {
         theaters={theaters}
         value={form.theater_id}
         onChange={(v) => set("theater_id", v)}
-        onAdd={async (name, chain, state) => {
-          const t = await addTheater({ name, chain, state, city: null });
+        onAdd={async (name, chain, state, city) => {
+          const t = await addTheater({ name, chain, state, city });
           if (t) set("theater_id", t.id);
         }}
       />
@@ -582,17 +583,65 @@ function TheaterPicker({
   theaters: ReturnType<typeof useData>["theaters"];
   value: string | null;
   onChange: (v: string | null) => void;
-  onAdd: (name: string, chain: Chain, state: string | null) => Promise<void>;
+  onAdd: (name: string, chain: Chain, state: string | null, city: string | null) => Promise<void>;
 }) {
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState("");
   const [chain, setChain] = useState<Chain>("AMC");
   const [state, setState] = useState("");
+  const [city, setCity] = useState<string | null>(null);
+  const [results, setResults] = useState<PlaceTheater[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [picked, setPicked] = useState(false);
 
   const sorted = useMemo(
     () => [...theaters].sort((a, b) => a.name.localeCompare(b.name)),
     [theaters],
   );
+
+  useEffect(() => {
+    if (!adding || picked) {
+      setResults([]);
+      return;
+    }
+    const q = name.trim();
+    if (q.length < 2) {
+      setResults([]);
+      return;
+    }
+    let active = true;
+    setSearching(true);
+    const timer = setTimeout(async () => {
+      const r = await searchTheaters(q);
+      if (active) {
+        setResults(r);
+        setSearching(false);
+      }
+    }, 300);
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [name, adding, picked]);
+
+  function choose(p: PlaceTheater) {
+    setName(p.name);
+    setCity(p.city);
+    setState(p.state ?? "");
+    setChain(inferChain(p.name));
+    setResults([]);
+    setPicked(true);
+  }
+
+  function reset() {
+    setAdding(false);
+    setName("");
+    setChain("AMC");
+    setState("");
+    setCity(null);
+    setResults([]);
+    setPicked(false);
+  }
 
   return (
     <Field label="Theater">
@@ -612,7 +661,39 @@ function TheaterPicker({
         </div>
       ) : (
         <div className="card space-y-2 p-3">
-          <input className="input" placeholder="Theater name" value={name} onChange={(e) => setName(e.target.value)} />
+          <div className="relative">
+            <input
+              className="input w-full"
+              placeholder="Start typing a theater…"
+              value={name}
+              autoComplete="off"
+              onChange={(e) => {
+                setName(e.target.value);
+                setPicked(false);
+              }}
+            />
+            {!picked && (searching || results.length > 0) && (
+              <div className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-xl border border-white/10 bg-[#121214] shadow-xl">
+                {searching && results.length === 0 ? (
+                  <div className="px-3 py-2 text-sm text-white/40">Searching…</div>
+                ) : (
+                  results.map((p) => (
+                    <button
+                      type="button"
+                      key={p.id}
+                      onClick={() => choose(p)}
+                      className="block w-full px-3 py-2 text-left hover:bg-white/5"
+                    >
+                      <div className="text-sm text-bone">{p.name}</div>
+                      <div className="text-xs text-white/40">
+                        {[p.city, p.state].filter(Boolean).join(", ") || p.address}
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-2">
             <select className="input" value={chain} onChange={(e) => setChain(e.target.value as Chain)}>
               {CHAINS.map((c) => (
@@ -636,14 +717,13 @@ function TheaterPicker({
               className="btn-primary flex-1"
               disabled={!name.trim()}
               onClick={async () => {
-                await onAdd(name.trim(), chain, state || null);
-                setAdding(false);
-                setName("");
+                await onAdd(name.trim(), chain, state || null, city);
+                reset();
               }}
             >
               Add Theater
             </button>
-            <button type="button" className="btn-ghost" onClick={() => setAdding(false)}>
+            <button type="button" className="btn-ghost" onClick={reset}>
               Cancel
             </button>
           </div>
