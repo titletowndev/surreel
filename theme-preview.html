@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Surreel — Theme Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet" />
+<style>
+  /* ============ THEME TOKENS ============ */
+  :root{
+    --display:'Oswald'; --num-weight:600; --num-tracking:.02em;
+    --radius:20px;
+  }
+  /* 1 — EDITORIAL CINEMA */
+  [data-theme="editorial"]{
+    --bg:#0E0F12; --bg2:#0B0C0F; --card:#16181D; --card2:#1C1F26; --line:rgba(255,255,255,.07);
+    --text:#F5F3EE; --dim:#A7ABB4; --faint:#6B6F78;
+    --accent:#FF5C39; --accent2:#4DA3FF; --accent-ink:#0E0F12;
+    --ring1:#FF5C39; --ring2:#FF5C39;
+    --c1:#FF5C39; --c2:#4DA3FF; --c3:#F5B82E; --c4:#5BBE8B;
+    --display:'Inter'; --num-weight:800; --num-tracking:-.02em;
+    --grain:.02; --glow:0 0 0 transparent;
+  }
+  /* 2 — TEAL & ORANGE GRADE */
+  [data-theme="teal"]{
+    --bg:#07131A; --bg2:#040D12; --card:#0E2029; --card2:#143038; --line:rgba(120,200,200,.10);
+    --text:#EAF2F2; --dim:#9DB3B6; --faint:#5E7479;
+    --accent:#FF8A3D; --accent2:#2DD4BF; --accent-ink:#07131A;
+    --ring1:#2DD4BF; --ring2:#FF8A3D;
+    --c1:#FF8A3D; --c2:#2DD4BF; --c3:#6FE0C7; --c4:#F2C14E;
+    --grain:.04; --glow:0 0 60px -10px rgba(255,138,61,.45);
+  }
+  /* 3 — NEON MARQUEE */
+  [data-theme="neon"]{
+    --bg:#0B0716; --bg2:#070310; --card:#150D24; --card2:#1E1235; --line:rgba(180,120,255,.16);
+    --text:#F3ECFF; --dim:#B9A9D6; --faint:#7B6BA0;
+    --accent:#FF3DAE; --accent2:#2DE2E6; --accent-ink:#0B0716;
+    --ring1:#2DE2E6; --ring2:#FF3DAE;
+    --c1:#FF3DAE; --c2:#2DE2E6; --c3:#9D6BFF; --c4:#FFE74C;
+    --display:'Oswald'; --num-weight:600; --num-tracking:.04em;
+    --grain:.03; --glow:0 0 50px -6px rgba(255,61,174,.55);
+  }
+  /* 4 — VELVET LUXE GOLD */
+  [data-theme="gold"]{
+    --bg:#100B09; --bg2:#0A0705; --card:#1C1410; --card2:#241914; --line:rgba(246,196,83,.12);
+    --text:#F6EEDD; --dim:#C3B299; --faint:#8A795F;
+    --accent:#F6C453; --accent2:#B8860B; --accent-ink:#1A1208;
+    --ring1:#F6C453; --ring2:#B8860B;
+    --c1:#F6C453; --c2:#B8860B; --c3:#7A1F2B; --c4:#C98A3A;
+    --grain:.05; --glow:0 0 50px -8px rgba(246,196,83,.4);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;min-height:100vh;transition:background .4s,color .4s;}
+  .nums{font-variant-numeric:tabular-nums}
+  .display{font-family:var(--display),'Oswald',sans-serif;font-weight:var(--num-weight);letter-spacing:var(--num-tracking)}
+
+  /* grain + vignette layer */
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:var(--grain);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  body::after{content:"";position:fixed;inset:0 0 auto 0;height:420px;pointer-events:none;z-index:0;
+    background:radial-gradient(80% 100% at 50% -20%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%);}
+  [data-theme="neon"] .scanlines{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.06;
+    background:repeating-linear-gradient(0deg,#fff 0 1px,transparent 1px 3px)}
+  .scanlines{display:none}
+  [data-theme="neon"] .scanlines{display:block}
+
+  /* ============ SWITCHER ============ */
+  .switcher{position:sticky;top:0;z-index:40;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;
+    padding:14px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line)}
+  .switcher button{font:600 13px/1 'Inter';padding:9px 16px;border-radius:11px;border:1px solid var(--line);
+    background:var(--card);color:var(--dim);cursor:pointer;transition:.2s}
+  .switcher button.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+  .switcher .meta{flex-basis:100%;text-align:center;color:var(--faint);font-size:11px;margin-top:2px}
+
+  .wrap{position:relative;z-index:3;max-width:760px;margin:0 auto;padding:22px 18px 60px}
+
+  /* header */
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--display),'Oswald';font-weight:700;
+    letter-spacing:.04em;text-transform:uppercase;font-size:19px}
+  .brand .reel{color:var(--accent)}
+  .reel-mark{width:26px;height:26px;border:2px solid var(--accent);border-radius:50%;position:relative}
+  .reel-mark::before{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--accent)}
+  .gear{color:var(--faint);font-size:18px}
+
+  /* period */
+  .period{display:flex;flex-direction:column;align-items:center;gap:8px;margin:8px 0 20px}
+  .seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px}
+  .seg span{padding:6px 13px;font:600 12px/1 'Inter';color:var(--dim);border-radius:9px;cursor:default}
+  .seg span.on{background:var(--accent);color:var(--accent-ink)}
+  .pernav{display:flex;align-items:center;gap:14px;color:var(--dim);font-size:13px}
+  .pernav b{color:var(--text);font-weight:600;min-width:70px;text-align:center}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;border-radius:26px;padding:26px;margin-bottom:22px;
+    background:linear-gradient(140deg,var(--card2),var(--card));border:1px solid var(--line);box-shadow:var(--glow)}
+  .hero-row{display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative;z-index:2}
+  .kicker{font:700 11px/1 'Inter';letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+  .bignum{font-family:var(--display),'Oswald');font-weight:var(--num-weight);letter-spacing:var(--num-tracking);
+    font-size:58px;line-height:1;margin-top:6px}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .pill{font:600 11px/1 'Inter';padding:7px 11px;border-radius:999px;border:1px solid var(--line);
+    background:color-mix(in srgb,var(--text) 5%,transparent);color:var(--dim)}
+  .pill.hot{border-color:color-mix(in srgb,var(--accent) 45%,transparent);
+    background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+  [data-theme="gold"] .hero::after,[data-theme="neon"] .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none}
+  [data-theme="gold"] .hero::after{background:
+    linear-gradient(135deg,transparent 49%,color-mix(in srgb,var(--accent) 22%,transparent) 49.5%,transparent 50.5%) 0 0/26px 26px;opacity:.5}
+  [data-theme="neon"] .hero{border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+
+  /* ring */
+  .ringwrap{position:relative;flex:0 0 auto;width:132px;height:132px}
+  .ringwrap .lbl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ringwrap .lbl .pct{font-family:var(--display),'Oswald';font-weight:var(--num-weight);font-size:26px;color:var(--accent)}
+  .ringwrap .lbl .cap{font:700 9px/1 'Inter';letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-top:4px}
+
+  /* stat grid */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px;transition:.25s}
+  .stat:hover{border-color:color-mix(in srgb,var(--accent) 40%,transparent);box-shadow:var(--glow)}
+  .stat .k{font:700 10px/1 'Inter';letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  .stat .v{font-family:var(--display),'Oswald';font-weight:var(--num-weight);letter-spacing:var(--num-tracking);
+    font-size:25px;margin-top:7px}
+  .stat .v.accent{color:var(--accent)}
+  .stat .v.muted{font-size:14px;color:var(--faint);font-family:'Inter';font-weight:500;letter-spacing:0}
+
+  .section-title{font-family:var(--display),'Oswald';font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+    font-size:17px;margin:0 0 14px}
+
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;transition:.25s}
+  .panel:hover{border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+  .panel-head{display:flex;align-items:flex-start;justify-content:space-between}
+  .panel-head h3{font-family:var(--display),'Oswald';font-weight:600;letter-spacing:.04em;text-transform:uppercase;font-size:15px}
+  .panel-head .big{font-family:var(--display),'Oswald';font-weight:var(--num-weight);font-size:20px;color:var(--accent);text-align:right}
+  .panel-head .cap{font:700 9px/1 'Inter';letter-spacing:.12em;text-transform:uppercase;color:var(--faint);text-align:right;margin-top:3px}
+
+  /* donut legend */
+  .donut-row{display:flex;align-items:center;gap:16px;margin-top:12px}
+  .legend{list-style:none;font-size:13px;color:var(--dim)}
+  .legend li{display:flex;align-items:center;gap:8px;margin:5px 0}
+  .legend .dot{width:10px;height:10px;border-radius:50%}
+
+  /* bars */
+  .bars{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+  .bar .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--dim);margin-bottom:5px}
+  .bar .meta b{color:var(--text);font-weight:600}
+  .track{height:8px;border-radius:99px;background:color-mix(in srgb,var(--text) 8%,transparent);overflow:hidden}
+  .fill{height:100%;border-radius:99px}
+
+  /* vbars */
+  .vbars{display:flex;align-items:flex-end;justify-content:space-between;gap:6px;height:110px;margin-top:12px}
+  .vbars .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%}
+  .vbars .barbox{flex:1;width:100%;display:flex;align-items:flex-end}
+  .vbars .vb{width:100%;border-radius:6px 6px 0 0;background:color-mix(in srgb,var(--accent) 80%,transparent)}
+  .vbars .lab{font:600 10px/1 'Inter';color:var(--faint)}
+
+  /* bottom nav */
+  .nav{position:sticky;bottom:0;z-index:30;margin-top:30px;display:flex;border-top:1px solid var(--line);
+    background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-radius:0 0 var(--radius) var(--radius)}
+  .nav a{flex:1;text-align:center;padding:13px 0;font:700 10px/1.6 'Inter';color:var(--faint);text-decoration:none}
+  .nav a.on{color:var(--accent)}
+  .nav a .ic{font-size:17px}
+
+  /* marquee bulbs for neon */
+  .bulbs{display:none;gap:7px;margin-bottom:10px}
+  [data-theme="neon"] .bulbs{display:flex}
+  .bulbs i{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+  .bulbs i:nth-child(even){background:var(--accent2);box-shadow:0 0 8px var(--accent2)}
+
+  @media(max-width:640px){.grid{grid-template-columns:repeat(2,1fr)}.cards2{grid-template-columns:1fr}.bignum{font-size:46px}}
+</style>
+</head>
+<body data-theme="editorial">
+<div class="scanlines"></div>
+
+<div class="switcher">
+  <button data-set="editorial" class="on">① Editorial Cinema</button>
+  <button data-set="teal">② Teal &amp; Orange</button>
+  <button data-set="neon">③ Neon Marquee</button>
+  <button data-set="gold">④ Velvet Luxe Gold</button>
+  <div class="meta">Same dashboard, four skins — click to compare. Sample data shown.</div>
+</div>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><span class="reel-mark"></span><span>Reel<span class="reel">Ledger</span></span></div>
+    <div class="gear">⚙</div>
+  </div>
+
+  <div class="period">
+    <div class="seg"><span>Week</span><span>Month</span><span class="on">Year</span><span>All Time</span></div>
+    <div class="pernav"><span>‹</span><b>2026</b><span>›</span></div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="bulbs"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="hero-row">
+      <div>
+        <div class="kicker">A-List Savings So Far</div>
+        <div class="bignum">$312.40</div>
+        <div class="pills"><span class="pill hot">Ahead of membership</span><span class="pill">+$23.92 in waived fees</span></div>
+      </div>
+      <div class="ringwrap">
+        <svg width="132" height="132" style="transform:rotate(-90deg)">
+          <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" style="stop-color:var(--ring1)"/><stop offset="100%" style="stop-color:var(--ring2)"/>
+          </linearGradient></defs>
+          <circle cx="66" cy="66" r="54" fill="none" stroke="color-mix(in srgb,var(--text) 10%,transparent)" stroke-width="12"/>
+          <circle cx="66" cy="66" r="54" fill="none" stroke="url(#rg)" stroke-width="12" stroke-linecap="round"
+            stroke-dasharray="339.3" stroke-dashoffset="200.2"/>
+        </svg>
+        <div class="lbl"><span class="pct">41%</span><span class="cap">Saved</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT GRID -->
+  <div class="grid">
+    <div class="stat"><div class="k">Ticket Value</div><div class="v accent">$761.50</div></div>
+    <div class="stat"><div class="k">Membership Paid</div><div class="v">$449.10</div></div>
+    <div class="stat"><div class="k">Cost Per Movie</div><div class="v">$14.97</div></div>
+    <div class="stat"><div class="k">Cost Per Hour</div><div class="v">$5.20</div></div>
+    <div class="stat"><div class="k">Movies Watched</div><div class="v">30</div></div>
+    <div class="stat"><div class="k">Hours Watched</div><div class="v">86.3</div></div>
+  </div>
+
+  <h2 class="section-title">The Reel Story</h2>
+  <div class="cards2">
+    <!-- How I Spend -->
+    <div class="panel">
+      <div class="panel-head"><h3>How I Spend</h3><div><div class="big">41%</div><div class="cap">saved</div></div></div>
+      <div class="donut-row">
+        <svg width="104" height="104" style="transform:rotate(-90deg)">
+          <circle cx="52" cy="52" r="42" fill="none" stroke="color-mix(in srgb,var(--text) 8%,transparent)" stroke-width="16"/>
+          <circle cx="52" cy="52" r="42" fill="none" stroke="var(--c1)" stroke-width="16" stroke-dasharray="167.3 96.6" stroke-dashoffset="0"/>
+          <circle cx="52" cy="52" r="42" fill="none" stroke="var(--c2)" stroke-width="16" stroke-dasharray="52.8 211.1" stroke-dashoffset="-167.3"/>
+          <circle cx="52" cy="52" r="42" fill="none" stroke="var(--c3)" stroke-width="16" stroke-dasharray="32.2 231.7" stroke-dashoffset="-220.1"/>
+          <circle cx="52" cy="52" r="42" fill="none" stroke="var(--c4)" stroke-width="16" stroke-dasharray="11.6 252.3" stroke-dashoffset="-252.3"/>
+        </svg>
+        <ul class="legend">
+          <li><span class="dot" style="background:var(--c1)"></span>Subscriptions</li>
+          <li><span class="dot" style="background:var(--c2)"></span>Concessions</li>
+          <li><span class="dot" style="background:var(--c3)"></span>Extra Tickets</li>
+          <li><span class="dot" style="background:var(--c4)"></span>Misc</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- What I Watch -->
+    <div class="panel">
+      <div class="panel-head"><h3>What I Watch</h3><div><div class="big">Sci-Fi</div><div class="cap">top genre</div></div></div>
+      <div class="bars">
+        <div class="bar"><div class="meta"><span>Sci-Fi</span><b>9</b></div><div class="track"><div class="fill" style="width:100%;background:var(--accent)"></div></div></div>
+        <div class="bar"><div class="meta"><span>Action</span><b>7</b></div><div class="track"><div class="fill" style="width:78%;background:color-mix(in srgb,var(--accent) 60%,transparent)"></div></div></div>
+        <div class="bar"><div class="meta"><span>Drama</span><b>6</b></div><div class="track"><div class="fill" style="width:67%;background:color-mix(in srgb,var(--accent) 60%,transparent)"></div></div></div>
+        <div class="bar"><div class="meta"><span>Thriller</span><b>5</b></div><div class="track"><div class="fill" style="width:56%;background:color-mix(in srgb,var(--accent) 60%,transparent)"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Where I Watch -->
+    <div class="panel">
+      <div class="panel-head"><h3>Where I Watch</h3><div><div class="big">5</div><div class="cap">theaters</div></div></div>
+      <div class="bars">
+        <div class="bar"><div class="meta"><span>AMC Boston Common</span><b>12</b></div><div class="track"><div class="fill" style="width:100%;background:var(--accent)"></div></div></div>
+        <div class="bar"><div class="meta"><span>AMC Assembly Row</span><b>8</b></div><div class="track"><div class="fill" style="width:67%;background:color-mix(in srgb,var(--accent) 60%,transparent)"></div></div></div>
+        <div class="bar"><div class="meta"><span>Regal Fenway</span><b>6</b></div><div class="track"><div class="fill" style="width:50%;background:color-mix(in srgb,var(--accent) 60%,transparent)"></div></div></div>
+        <div class="bar"><div class="meta"><span>Coolidge Corner</span><b>4</b></div><div class="track"><div class="fill" style="width:33%;background:color-mix(in srgb,var(--accent) 60%,transparent)"></div></div></div>
+      </div>
+    </div>
+
+    <!-- When I Watched -->
+    <div class="panel">
+      <div class="panel-head"><h3>When I Watched</h3><div><div class="big">6W</div><div class="cap">streak</div></div></div>
+      <div class="vbars">
+        <div class="col"><div class="barbox"><div class="vb" style="height:18%"></div></div><span class="lab">S</span></div>
+        <div class="col"><div class="barbox"><div class="vb" style="height:9%"></div></div><span class="lab">M</span></div>
+        <div class="col"><div class="barbox"><div class="vb" style="height:4%"></div></div><span class="lab">T</span></div>
+        <div class="col"><div class="barbox"><div class="vb" style="height:28%"></div></div><span class="lab">W</span></div>
+        <div class="col"><div class="barbox"><div class="vb" style="height:38%"></div></div><span class="lab">T</span></div>
+        <div class="col"><div class="barbox"><div class="vb" style="height:72%"></div></div><span class="lab">F</span></div>
+        <div class="col"><div class="barbox"><div class="vb" style="height:100%"></div></div><span class="lab">S</span></div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a class="on"><div class="ic">◉</div>Home</a>
+    <a><div class="ic">▦</div>Movies</a>
+    <a><div class="ic">▢</div>Screens</a>
+    <a><div class="ic">↺</div>Rewind</a>
+  </nav>
+</div>
+
+<script>
+  const body=document.body;
+  document.querySelectorAll('.switcher button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      body.setAttribute('data-theme',b.dataset.set);
+      document.querySelectorAll('.switcher button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+  // keyboard 1-4
+  addEventListener('keydown',e=>{const m={'1':'editorial','2':'teal','3':'neon','4':'gold'};
+    if(m[e.key]){document.querySelector(`[data-set="${m[e.key]}"]`).click();}});
+  // deep link ?t=theme (for screenshots)
+  const t=new URLSearchParams(location.search).get('t');
+  if(t&&document.querySelector(`[data-set="${t}"]`)) document.querySelector(`[data-set="${t}"]`).click();
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Surreel — Apple-grade</title>
+<style>
+  :root{
+    --black:#000;
+    --label:#F5F5F7;                      /* primary label */
+    --label2:rgba(235,235,245,.60);       /* secondary */
+    --label3:rgba(235,235,245,.30);       /* tertiary  */
+    --hair:rgba(255,255,255,.09);         /* hairline border */
+    --glass:rgba(255,255,255,.055);
+    --glass2:rgba(255,255,255,.08);
+    /* Apple system colors (dark) */
+    --blue:#0A84FF; --indigo:#5E5CE6; --teal:#64D2FF; --green:#30D158;
+    --mint:#66D4CF; --orange:#FF9F0A; --pink:#FF375F;
+    --sf:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',sans-serif;
+    --shadow:0 24px 70px -28px rgba(0,0,0,.85);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{
+    font-family:var(--sf);color:var(--label);min-height:100vh;
+    background:
+      radial-gradient(55% 45% at 12% -5%, rgba(94,92,230,.16), transparent 60%),
+      radial-gradient(45% 38% at 96% 6%, rgba(10,132,255,.13), transparent 60%),
+      radial-gradient(80% 55% at 50% 108%, rgba(48,209,88,.07), transparent 60%),
+      #000;
+    background-attachment:fixed;
+  }
+  .nums{font-variant-numeric:tabular-nums}
+  .display{font-weight:700;letter-spacing:-.03em}
+
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 64px}
+
+  /* top bar */
+  .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
+    padding:16px 2px;margin-bottom:6px;background:linear-gradient(#000 30%,rgba(0,0,0,0));}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:19px;letter-spacing:-.01em}
+  .mark{width:25px;height:25px;border-radius:50%;border:1.5px solid var(--label);position:relative;opacity:.95}
+  .mark::before{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--label)}
+  .glyph{color:var(--label2);font-size:18px;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;
+    background:var(--glass);border:.5px solid var(--hair);backdrop-filter:blur(20px)}
+
+  /* segmented (iOS) */
+  .period{display:flex;flex-direction:column;align-items:center;gap:12px;margin:14px 0 26px}
+  .seg{display:inline-flex;gap:2px;padding:3px;border-radius:11px;background:rgba(118,118,128,.24);backdrop-filter:blur(20px)}
+  .seg span{padding:7px 16px;font-size:13px;font-weight:600;color:var(--label);border-radius:9px;letter-spacing:-.01em}
+  .seg span.on{background:#636366;box-shadow:0 1px 4px rgba(0,0,0,.4),0 0 0 .5px rgba(255,255,255,.12)}
+  .seg span:not(.on){color:var(--label2)}
+  .pernav{display:flex;align-items:center;gap:18px;color:var(--label2);font-size:14px;font-weight:500}
+  .pernav .a{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--glass);border:.5px solid var(--hair)}
+  .pernav b{color:var(--label);font-weight:600;min-width:62px;text-align:center;letter-spacing:-.01em}
+
+  .card{background:var(--glass);border:.5px solid var(--hair);border-radius:24px;backdrop-filter:blur(30px) saturate(180%);
+    -webkit-backdrop-filter:blur(30px) saturate(180%);box-shadow:var(--shadow)}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;padding:30px;margin-bottom:16px}
+  .hero::before{content:"";position:absolute;width:340px;height:340px;right:-60px;top:-120px;border-radius:50%;
+    background:radial-gradient(circle, rgba(48,209,88,.22), transparent 65%);filter:blur(20px);pointer-events:none}
+  .hero-row{position:relative;display:flex;align-items:center;justify-content:space-between;gap:22px}
+  .kick{font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--label2);text-transform:none}
+  .hero .big{font-size:64px;line-height:1;font-weight:700;letter-spacing:-.04em;margin-top:8px}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .pill{font-size:12px;font-weight:600;padding:7px 13px;border-radius:999px;color:var(--label2);
+    background:var(--glass2);border:.5px solid var(--hair)}
+  .pill.good{color:var(--green);background:rgba(48,209,88,.12);border-color:rgba(48,209,88,.28)}
+
+  .ring{position:relative;width:138px;height:138px;flex:0 0 auto}
+  .ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .c .p{font-size:28px;font-weight:700;letter-spacing:-.03em;
+    background:linear-gradient(120deg,var(--green),var(--mint));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ring .c .s{font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--label3);text-transform:uppercase;margin-top:4px}
+
+  /* stat grid */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:30px}
+  .stat{padding:18px 18px 20px}
+  .stat .k{font-size:12px;font-weight:600;color:var(--label2);letter-spacing:-.01em}
+  .stat .v{font-size:27px;font-weight:700;letter-spacing:-.03em;margin-top:10px}
+  .stat .v.muted{font-size:15px;font-weight:500;color:var(--label3);letter-spacing:-.01em}
+
+  .h2{font-size:22px;font-weight:700;letter-spacing:-.03em;margin:0 2px 16px}
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .panel{padding:20px}
+  .phead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .phead h3{font-size:16px;font-weight:600;letter-spacing:-.02em}
+  .phead .r{text-align:right}
+  .phead .r .b{font-size:19px;font-weight:700;letter-spacing:-.03em}
+  .phead .r .c{font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--label3);text-transform:uppercase;margin-top:3px}
+
+  .donutrow{display:flex;align-items:center;gap:18px;margin-top:14px}
+  .legend{list-style:none;font-size:13.5px;color:var(--label2);font-weight:500}
+  .legend li{display:flex;align-items:center;gap:9px;margin:7px 0}
+  .legend .d{width:9px;height:9px;border-radius:50%}
+  .legend b{color:var(--label);font-weight:600;margin-left:auto}
+
+  .bars{margin-top:16px;display:flex;flex-direction:column;gap:13px}
+  .bar .m{display:flex;justify-content:space-between;font-size:13.5px;color:var(--label2);font-weight:500;margin-bottom:7px}
+  .bar .m b{color:var(--label);font-weight:600}
+  .track{height:7px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+  .fill{height:100%;border-radius:99px}
+
+  .vbars{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;height:112px;margin-top:16px}
+  .vbars .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%}
+  .vbars .bx{flex:1;width:100%;display:flex;align-items:flex-end}
+  .vbars .vb{width:100%;border-radius:6px;background:linear-gradient(var(--blue),rgba(10,132,255,.35))}
+  .vbars .l{font-size:11px;font-weight:600;color:var(--label3)}
+
+  /* tab bar */
+  .tabs{position:sticky;bottom:14px;margin-top:34px;display:flex;padding:8px;border-radius:22px;
+    background:rgba(30,30,32,.55);border:.5px solid var(--hair);backdrop-filter:blur(30px) saturate(180%);box-shadow:var(--shadow)}
+  .tabs a{flex:1;text-align:center;text-decoration:none;color:var(--label3);font-size:11px;font-weight:600;padding:6px 0}
+  .tabs a.on{color:var(--label)}
+  .tabs a .i{display:block;font-size:18px;margin-bottom:3px}
+  @media(max-width:640px){.grid{grid-template-columns:repeat(2,1fr)}.cards2{grid-template-columns:1fr}.hero .big{font-size:50px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>Surreel</div>
+    <div class="glyph"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+  </div>
+
+  <div class="period">
+    <div class="seg"><span>Week</span><span>Month</span><span class="on">Year</span><span>All Time</span></div>
+    <div class="pernav"><span class="a">‹</span><b>2026</b><span class="a">›</span></div>
+  </div>
+
+  <!-- HERO -->
+  <div class="card hero">
+    <div class="hero-row">
+      <div>
+        <div class="kick">A-List Savings So Far</div>
+        <div class="big nums">$312.40</div>
+        <div class="pills"><span class="pill good">Ahead of membership</span><span class="pill">+$23.92 waived fees</span></div>
+      </div>
+      <div class="ring">
+        <svg width="138" height="138" style="transform:rotate(-90deg)">
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#30D158"/><stop offset="100%" stop-color="#66D4CF"/></linearGradient></defs>
+          <circle cx="69" cy="69" r="58" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="11"/>
+          <circle cx="69" cy="69" r="58" fill="none" stroke="url(#g)" stroke-width="11" stroke-linecap="round"
+            stroke-dasharray="364.4" stroke-dashoffset="215"/>
+        </svg>
+        <div class="c"><span class="p">41%</span><span class="s">Saved</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT GRID -->
+  <div class="grid">
+    <div class="card stat"><div class="k">Ticket Value</div><div class="v nums">$761.50</div></div>
+    <div class="card stat"><div class="k">Membership Paid</div><div class="v nums">$449.10</div></div>
+    <div class="card stat"><div class="k">Cost / Movie</div><div class="v nums">$14.97</div></div>
+    <div class="card stat"><div class="k">Cost / Hour</div><div class="v nums">$5.20</div></div>
+    <div class="card stat"><div class="k">Movies Watched</div><div class="v nums">30</div></div>
+    <div class="card stat"><div class="k">Hours Watched</div><div class="v nums">86.3</div></div>
+  </div>
+
+  <h2 class="h2">The Reel Story</h2>
+  <div class="cards2">
+    <!-- How I Spend -->
+    <div class="card panel">
+      <div class="phead"><h3>How I Spend</h3><div class="r"><div class="b" style="color:var(--green)">41%</div><div class="c">saved</div></div></div>
+      <div class="donutrow">
+        <svg width="108" height="108" style="transform:rotate(-90deg)">
+          <circle cx="54" cy="54" r="44" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="14"/>
+          <circle cx="54" cy="54" r="44" fill="none" stroke="var(--blue)"   stroke-width="14" stroke-dasharray="175.3 101.0" stroke-dashoffset="0"/>
+          <circle cx="54" cy="54" r="44" fill="none" stroke="var(--indigo)" stroke-width="14" stroke-dasharray="55.3 221.0" stroke-dashoffset="-175.3"/>
+          <circle cx="54" cy="54" r="44" fill="none" stroke="var(--teal)"   stroke-width="14" stroke-dasharray="33.7 242.6" stroke-dashoffset="-230.6"/>
+          <circle cx="54" cy="54" r="44" fill="none" stroke="var(--orange)" stroke-width="14" stroke-dasharray="12.1 264.2" stroke-dashoffset="-264.3"/>
+        </svg>
+        <ul class="legend">
+          <li><span class="d" style="background:var(--blue)"></span>Subscriptions <b>$449</b></li>
+          <li><span class="d" style="background:var(--indigo)"></span>Concessions <b>$142</b></li>
+          <li><span class="d" style="background:var(--teal)"></span>Extra Tickets <b>$87</b></li>
+          <li><span class="d" style="background:var(--orange)"></span>Misc <b>$31</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- What I Watch -->
+    <div class="card panel">
+      <div class="phead"><h3>What I Watch</h3><div class="r"><div class="b">Sci-Fi</div><div class="c">top genre</div></div></div>
+      <div class="bars">
+        <div class="bar"><div class="m"><span>Sci-Fi</span><b>9</b></div><div class="track"><div class="fill" style="width:100%;background:linear-gradient(90deg,var(--blue),var(--teal))"></div></div></div>
+        <div class="bar"><div class="m"><span>Action</span><b>7</b></div><div class="track"><div class="fill" style="width:78%;background:rgba(10,132,255,.55)"></div></div></div>
+        <div class="bar"><div class="m"><span>Drama</span><b>6</b></div><div class="track"><div class="fill" style="width:67%;background:rgba(10,132,255,.55)"></div></div></div>
+        <div class="bar"><div class="m"><span>Thriller</span><b>5</b></div><div class="track"><div class="fill" style="width:56%;background:rgba(10,132,255,.55)"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Where I Watch -->
+    <div class="card panel">
+      <div class="phead"><h3>Where I Watch</h3><div class="r"><div class="b nums">5</div><div class="c">theaters</div></div></div>
+      <div class="bars">
+        <div class="bar"><div class="m"><span>AMC Boston Common</span><b>12</b></div><div class="track"><div class="fill" style="width:100%;background:linear-gradient(90deg,var(--indigo),var(--blue))"></div></div></div>
+        <div class="bar"><div class="m"><span>AMC Assembly Row</span><b>8</b></div><div class="track"><div class="fill" style="width:67%;background:rgba(94,92,230,.55)"></div></div></div>
+        <div class="bar"><div class="m"><span>Regal Fenway</span><b>6</b></div><div class="track"><div class="fill" style="width:50%;background:rgba(94,92,230,.55)"></div></div></div>
+        <div class="bar"><div class="m"><span>Coolidge Corner</span><b>4</b></div><div class="track"><div class="fill" style="width:33%;background:rgba(94,92,230,.55)"></div></div></div>
+      </div>
+    </div>
+
+    <!-- When I Watched -->
+    <div class="card panel">
+      <div class="phead"><h3>When I Watched</h3><div class="r"><div class="b nums">6W</div><div class="c">streak</div></div></div>
+      <div class="vbars">
+        <div class="col"><div class="bx"><div class="vb" style="height:18%"></div></div><span class="l">S</span></div>
+        <div class="col"><div class="bx"><div class="vb" style="height:9%"></div></div><span class="l">M</span></div>
+        <div class="col"><div class="bx"><div class="vb" style="height:4%"></div></div><span class="l">T</span></div>
+        <div class="col"><div class="bx"><div class="vb" style="height:28%"></div></div><span class="l">W</span></div>
+        <div class="col"><div class="bx"><div class="vb" style="height:38%"></div></div><span class="l">T</span></div>
+        <div class="col"><div class="bx"><div class="vb" style="height:72%"></div></div><span class="l">F</span></div>
+        <div class="col"><div class="bx"><div class="vb" style="height:100%"></div></div><span class="l">S</span></div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="tabs">
+    <a class="on"><span class="i">◉</span>Home</a>
+    <a><span class="i">▦</span>Movies</a>
+    <a><span class="i">▢</span>Screens</a>
+    <a><span class="i">↺</span>Rewind</a>
+  </nav>
+</div>
+</body>
+</html>

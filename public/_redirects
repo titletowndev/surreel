@@ -1,0 +1,4 @@
+# Cloudflare Pages SPA fallback.
+# /api/* is handled by the Pages Function in /functions (which takes precedence),
+# so this only catches client-side routes and serves the app shell.
+/*    /index.html   200
