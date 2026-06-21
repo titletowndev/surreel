@@ -29,7 +29,7 @@ export function Login() {
         <div className="mb-6 flex flex-col items-center text-center">
           <img src="/reel.svg" alt="" className="mb-3 h-14 w-14 animate-flicker" />
           <h1 className="display text-3xl tracking-marquee text-bone">
-            Reel<span className="text-amber">Ledger</span>
+            Sur<span className="text-amber">reel</span>
           </h1>
           <p className="mt-2 text-sm text-bone-dim">
             Your cinematic record of every theater visit — and every dollar your
