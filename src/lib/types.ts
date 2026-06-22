@@ -90,6 +90,7 @@ export interface Screening {
   misc_spend: number | null;
   additional_tickets: number;
   additional_tickets_cost: number | null;
+  additional_tickets_value: number | null;
 
   amount_paid: number;
   acquisition: Acquisition | null;

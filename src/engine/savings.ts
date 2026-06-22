@@ -67,7 +67,7 @@ export function computeSavings(
   const periodCharges = chargesInPeriod(charges, range);
 
   const grossTicketValueCents = seen.reduce(
-    (sum, s) => sum + toCents(s.ticket_value),
+    (sum, s) => sum + toCents(s.ticket_value) + toCents(s.additional_tickets_value),
     0,
   );
   const membershipPaidCents = periodCharges.reduce(
@@ -75,7 +75,7 @@ export function computeSavings(
     0,
   );
   const amountPaidCents = seen.reduce(
-    (sum, s) => sum + toCents(s.amount_paid),
+    (sum, s) => sum + toCents(s.amount_paid) + toCents(s.additional_tickets_cost),
     0,
   );
   const totalSpentCents = membershipPaidCents + amountPaidCents;

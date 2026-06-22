@@ -104,6 +104,11 @@ export function ScreeningDetail() {
       .join(" · ") || "Standard";
   const metaLine = [runtime, s.mpaa_rating].filter(Boolean).join(" · ");
 
+  const additionalValue = s.additional_tickets_value ?? 0;
+  const additionalPaid = s.additional_tickets_cost ?? 0;
+  const totalSaved =
+    s.ticket_value - s.amount_paid + (additionalValue - additionalPaid);
+
   const q = encodeURIComponent(s.title);
   const letterboxd = s.tmdb_id
     ? `https://letterboxd.com/tmdb/${s.tmdb_id}/`
@@ -184,7 +189,13 @@ export function ScreeningDetail() {
         <Row label="Membership" value={program ? program.name : "None"} />
         <Row label="Ticket value" value={usd(s.ticket_value)} />
         <Row label="Amount paid" value={usd(s.amount_paid)} />
-        <Row label="Saved" value={usd(s.ticket_value - s.amount_paid)} />
+        {s.additional_tickets > 0 && (
+          <>
+            <Row label={`Additional value (${s.additional_tickets})`} value={usd(additionalValue)} />
+            <Row label="Additional paid" value={usd(additionalPaid)} />
+          </>
+        )}
+        <Row label="Saved" value={usd(totalSaved)} />
         {s.acquisition && (
           <Row label="Paid via" value={ACQUISITION_LABELS[s.acquisition] ?? s.acquisition} />
         )}

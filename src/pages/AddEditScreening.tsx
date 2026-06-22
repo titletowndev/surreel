@@ -46,6 +46,7 @@ interface FormState {
   misc_spend: string;
   additional_tickets: number;
   additional_tickets_cost: string;
+  additional_tickets_value: string;
   rating: string;
   tags: string;
   notes: string;
@@ -84,6 +85,7 @@ function emptyForm(): FormState {
     misc_spend: "",
     additional_tickets: 0,
     additional_tickets_cost: "",
+    additional_tickets_value: "",
     rating: "",
     tags: "",
     notes: "",
@@ -170,6 +172,8 @@ export function AddEditScreening() {
       additional_tickets: existing.additional_tickets,
       additional_tickets_cost:
         existing.additional_tickets_cost == null ? "" : String(existing.additional_tickets_cost),
+      additional_tickets_value:
+        existing.additional_tickets_value == null ? "" : String(existing.additional_tickets_value),
       rating: existing.rating == null ? "" : String(existing.rating),
       tags: existing.tags.join(", "),
       notes: existing.notes ?? "",
@@ -272,6 +276,7 @@ export function AddEditScreening() {
       misc_spend: num(form.misc_spend),
       additional_tickets: form.additional_tickets,
       additional_tickets_cost: num(form.additional_tickets_cost),
+      additional_tickets_value: num(form.additional_tickets_value),
       rating: num(form.rating),
       tags: form.tags
         .split(",")
@@ -459,11 +464,15 @@ export function AddEditScreening() {
         </Field>
       </div>
 
+      <Field label="Additional Tickets" hint="Other seats in this purchase (guests). Their value and what you paid go below.">
+        <Stepper value={form.additional_tickets} onChange={(v) => set("additional_tickets", v)} />
+      </Field>
+
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Additional Tickets">
-          <Stepper value={form.additional_tickets} onChange={(v) => set("additional_tickets", v)} />
+        <Field label="Additional Value" hint="Retail of the other seats.">
+          <MoneyInput value={form.additional_tickets_value} onChange={(v) => set("additional_tickets_value", v)} />
         </Field>
-        <Field label="Additional Tickets Cost">
+        <Field label="Additional Paid" hint="What you paid for the other seats.">
           <MoneyInput value={form.additional_tickets_cost} onChange={(v) => set("additional_tickets_cost", v)} />
         </Field>
       </div>

@@ -136,6 +136,7 @@ function toScreening(s: Seed): Screening {
     misc_spend: s.misc ?? null,
     additional_tickets: s.extra ?? 0,
     additional_tickets_cost: s.extraCost ?? null,
+    additional_tickets_value: s.extraCost ?? null,
     amount_paid: 0,
     acquisition: "membership",
     rating: s.rating ?? null,
