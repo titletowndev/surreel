@@ -12,3 +12,5 @@ dist-ssr
 .wrangler
 *.log
 npm-debug.log*
+
+*.py
