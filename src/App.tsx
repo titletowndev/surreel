@@ -7,6 +7,7 @@ import { Screens } from "@/pages/Screens";
 import { Rewind } from "@/pages/Rewind";
 import { Settings } from "@/pages/Settings";
 import { AddEditScreening } from "@/pages/AddEditScreening";
+import { ScreeningDetail } from "@/pages/ScreeningDetail";
 import { HowISpend } from "@/pages/analytics/HowISpend";
 import { WhatIWatch } from "@/pages/analytics/WhatIWatch";
 import { WhereIWatch } from "@/pages/analytics/WhereIWatch";
@@ -21,7 +22,7 @@ const TABS = [
 
 function Chrome({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const hideTabs = location.pathname.startsWith("/add") || location.pathname.startsWith("/edit");
+  const hideTabs = location.pathname.startsWith("/add") || location.pathname.startsWith("/edit") || location.pathname.startsWith("/movie/");
 
   return (
     <div className="mx-auto flex min-h-screen max-w-3xl flex-col px-[18px]">
@@ -105,6 +106,7 @@ export default function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/add" element={<AddEditScreening />} />
         <Route path="/edit/:id" element={<AddEditScreening />} />
+        <Route path="/movie/:id" element={<ScreeningDetail />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </Chrome>

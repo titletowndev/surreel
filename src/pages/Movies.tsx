@@ -146,7 +146,7 @@ function ScreeningRow({
 }) {
   return (
     <Link
-      to={`/edit/${s.id}`}
+      to={`/movie/${s.id}`}
       className="card card-hover flex items-center gap-3 p-2.5"
     >
       <Poster

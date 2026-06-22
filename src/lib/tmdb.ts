@@ -117,3 +117,13 @@ export async function getMovieMeta(tmdbId: number): Promise<MovieMeta> {
     overview: d.overview,
   };
 }
+
+
+export interface TmdbExternalIds {
+  imdb_id: string | null;
+}
+
+/** External IDs (notably the IMDb id) for a movie, via the TMDB proxy. */
+export async function getExternalIds(tmdbId: number): Promise<TmdbExternalIds> {
+  return tmdbGet<TmdbExternalIds>(`movie/${tmdbId}/external_ids`);
+}
