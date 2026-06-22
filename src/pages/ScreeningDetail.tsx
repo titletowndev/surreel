@@ -106,11 +106,11 @@ export function ScreeningDetail() {
   const callsheet = s.tmdb_id ? `https://callsheetapp.com/movie/${s.tmdb_id}` : "https://callsheetapp.com/";
   const rottentomatoes = `https://www.rottentomatoes.com/search?search=${q}`;
 
-  async function onDelete() {
+  const onDelete = async () => {
     if (!confirm("Delete this screening? This cannot be undone.")) return;
     await deleteScreening(s.id);
     navigate("/movies");
-  }
+  };
 
   return (
     <div className="pb-10">
