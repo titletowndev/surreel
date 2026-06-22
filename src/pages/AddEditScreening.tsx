@@ -9,10 +9,12 @@ import { searchTheaters, inferChain, type PlaceTheater } from "@/lib/places";
 import { suggestTicketValue } from "@/lib/ticketValue";
 import {
   SCREEN_FORMATS,
+  ACQUISITIONS,
   CHAINS,
   US_STATES,
   type ScreeningInput,
   type ScreenFormat,
+  type Acquisition,
   type Chain,
 } from "@/lib/types";
 
@@ -37,6 +39,8 @@ interface FormState {
   showtimeLocal: string; // yyyy-MM-ddTHH:mm
   is_upcoming: boolean;
   ticket_value: string;
+  amount_paid: string;
+  acquisition: string;
   fees_saved: string;
   concessions_spend: string;
   misc_spend: string;
@@ -73,6 +77,8 @@ function emptyForm(): FormState {
     showtimeLocal: nowLocalInput(),
     is_upcoming: false,
     ticket_value: "",
+    amount_paid: "",
+    acquisition: "membership",
     fees_saved: "2.99",
     concessions_spend: "",
     misc_spend: "",
@@ -83,6 +89,14 @@ function emptyForm(): FormState {
     notes: "",
   };
 }
+
+const ACQUISITION_LABELS: Record<Acquisition, string> = {
+  membership: "Membership",
+  voucher: "Voucher / discount",
+  full_price: "Full price",
+  comp: "Comp",
+  other: "Other",
+};
 
 const num = (s: string): number | null => {
   const t = s.trim();
@@ -147,6 +161,9 @@ export function AddEditScreening() {
       showtimeLocal: fmtDate(parseISO(existing.showtime), "yyyy-MM-dd'T'HH:mm"),
       is_upcoming: existing.is_upcoming,
       ticket_value: String(existing.ticket_value ?? ""),
+      amount_paid:
+        existing.amount_paid == null ? "" : String(existing.amount_paid),
+      acquisition: existing.acquisition ?? "",
       fees_saved: String(existing.fees_saved ?? "2.99"),
       concessions_spend: existing.concessions_spend == null ? "" : String(existing.concessions_spend),
       misc_spend: existing.misc_spend == null ? "" : String(existing.misc_spend),
@@ -248,6 +265,8 @@ export function AddEditScreening() {
       showtime: new Date(form.showtimeLocal).toISOString(),
       is_upcoming: form.is_upcoming,
       ticket_value: num(form.ticket_value) ?? 0,
+      amount_paid: num(form.amount_paid) ?? 0,
+      acquisition: (form.acquisition || null) as Acquisition | null,
       fees_saved: num(form.fees_saved) ?? 0,
       concessions_spend: num(form.concessions_spend),
       misc_spend: num(form.misc_spend),
@@ -406,6 +425,26 @@ export function AddEditScreening() {
       >
         <MoneyInput value={form.ticket_value} onChange={(v) => { setTicketTouched(true); set("ticket_value", v); }} />
       </Field>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Amount Paid" hint="What you actually paid out of pocket for this screening (all seats). $0 if a membership covered it.">
+          <MoneyInput value={form.amount_paid} onChange={(v) => set("amount_paid", v)} />
+        </Field>
+        <Field label="How You Paid">
+          <select
+            className="input"
+            value={form.acquisition}
+            onChange={(e) => set("acquisition", e.target.value)}
+          >
+            <option value="">—</option>
+            {ACQUISITIONS.map((a) => (
+              <option key={a} value={a}>
+                {ACQUISITION_LABELS[a]}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </div>
 
       <Field label="Fees Saved" hint="Booking/convenience fee your membership waived. Tracked separately from the headline savings.">
         <MoneyInput value={form.fees_saved} onChange={(v) => set("fees_saved", v)} />

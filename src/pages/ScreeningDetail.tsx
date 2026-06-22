@@ -5,6 +5,14 @@ import { useData } from "@/state/data";
 import { Poster } from "@/components/ui/primitives";
 import { getExternalIds } from "@/lib/tmdb";
 
+const ACQUISITION_LABELS: Record<string, string> = {
+  membership: "Membership",
+  voucher: "Voucher / discount",
+  full_price: "Full price",
+  comp: "Comp",
+  other: "Other",
+};
+
 function ExtIcon() {
   return (
     <svg
@@ -175,6 +183,11 @@ export function ScreeningDetail() {
         <Row label="Format" value={formatLine} />
         <Row label="Membership" value={program ? program.name : "None"} />
         <Row label="Ticket value" value={usd(s.ticket_value)} />
+        <Row label="Amount paid" value={usd(s.amount_paid)} />
+        <Row label="Saved" value={usd(s.ticket_value - s.amount_paid)} />
+        {s.acquisition && (
+          <Row label="Paid via" value={ACQUISITION_LABELS[s.acquisition] ?? s.acquisition} />
+        )}
         <Row label="Fees saved" value={usd(s.fees_saved)} />
       </div>
 

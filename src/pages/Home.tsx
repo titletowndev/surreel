@@ -41,7 +41,7 @@ export function Home() {
         <div className="pointer-events-none absolute -right-16 -top-32 h-80 w-80 rounded-full bg-hero-glow blur-xl" />
         <div className="relative flex flex-col items-center gap-5 sm:flex-row sm:justify-between">
           <div className="text-center sm:text-left">
-            <div className="text-xs font-semibold text-bone-dim">A-List Savings So Far</div>
+            <div className="text-xs font-semibold text-bone-dim">Saved So Far</div>
             <div
               className={`display nums mt-2 text-6xl leading-none ${
                 savings.netSavingsCents >= 0 ? "text-bone" : "text-negative"
@@ -63,7 +63,7 @@ export function Home() {
       {/* Stat grid */}
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <StatTile label="Ticket Value" value={money(savings.grossTicketValueCents)} />
-        <StatTile label="Membership Paid" value={money(savings.membershipPaidCents)} />
+        <StatTile label="Total Spent" value={money(savings.totalSpentCents)} />
         <StatTile
           label="Cost Per Movie"
           value={money(savings.costPerMovieCents)}
@@ -96,7 +96,7 @@ export function Home() {
                 slices={[
                   { label: "Subscriptions", value: spend.subscriptionsCents, color: SPEND_COLORS.subscriptions },
                   { label: "Concessions", value: spend.concessionsCents, color: SPEND_COLORS.concessions },
-                  { label: "Extra Tickets", value: spend.extraTicketsCents, color: SPEND_COLORS.extraTickets },
+                  { label: "Tickets", value: spend.ticketsPaidCents + spend.extraTicketsCents, color: SPEND_COLORS.extraTickets },
                   { label: "Misc", value: spend.miscCents, color: SPEND_COLORS.misc },
                 ]}
               />

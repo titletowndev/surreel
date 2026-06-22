@@ -4,7 +4,7 @@
  *
  *   gross_ticket_value = Σ ticket_value over screenings in R
  *   membership_paid    = Σ charges.amount in R
- *   net_savings        = gross_ticket_value − membership_paid   (headline)
+ *   net_savings        = gross_ticket_value − membership_paid − Σ amount_paid
  *   pct_savings        = net_savings / gross_ticket_value
  *   bonus_fees_saved   = Σ fees_saved in R                      (separate stat)
  *   cost_per_movie     = membership_paid / count(movies in R)
@@ -19,6 +19,8 @@ import { toCents } from "@/lib/format";
 export interface SavingsSummary {
   grossTicketValueCents: number;
   membershipPaidCents: number;
+  amountPaidCents: number;
+  totalSpentCents: number;
   netSavingsCents: number;
   pctSavings: number; // 0..1, NaN-safe (0 when no gross)
   bonusFeesSavedCents: number;
@@ -31,6 +33,7 @@ export interface SavingsSummary {
 
 export interface SpendBreakdown {
   subscriptionsCents: number;
+  ticketsPaidCents: number;
   concessionsCents: number;
   extraTicketsCents: number;
   miscCents: number;
@@ -71,6 +74,11 @@ export function computeSavings(
     (sum, c) => sum + toCents(c.amount),
     0,
   );
+  const amountPaidCents = seen.reduce(
+    (sum, s) => sum + toCents(s.amount_paid),
+    0,
+  );
+  const totalSpentCents = membershipPaidCents + amountPaidCents;
   const bonusFeesSavedCents = seen.reduce(
     (sum, s) => sum + toCents(s.fees_saved),
     0,
@@ -81,24 +89,26 @@ export function computeSavings(
   );
 
   const moviesWatched = seen.length;
-  const netSavingsCents = grossTicketValueCents - membershipPaidCents;
+  const netSavingsCents = grossTicketValueCents - totalSpentCents;
 
   return {
     grossTicketValueCents,
     membershipPaidCents,
+    amountPaidCents,
+    totalSpentCents,
     netSavingsCents,
     pctSavings:
       grossTicketValueCents > 0 ? netSavingsCents / grossTicketValueCents : 0,
     bonusFeesSavedCents,
     costPerMovieCents:
-      moviesWatched > 0 ? Math.round(membershipPaidCents / moviesWatched) : 0,
+      moviesWatched > 0 ? Math.round(totalSpentCents / moviesWatched) : 0,
     costPerHourCents:
       totalRuntimeMin > 0
-        ? Math.round(membershipPaidCents / (totalRuntimeMin / 60))
+        ? Math.round(totalSpentCents / (totalRuntimeMin / 60))
         : 0,
     moviesWatched,
     totalRuntimeMin,
-    breakEven: grossTicketValueCents >= membershipPaidCents,
+    breakEven: grossTicketValueCents >= totalSpentCents,
   };
 }
 
@@ -110,6 +120,10 @@ export function computeSpendBreakdown(
   const seen = seenInPeriod(screenings, range);
   const subscriptionsCents = chargesInPeriod(charges, range).reduce(
     (s, c) => s + toCents(c.amount),
+    0,
+  );
+  const ticketsPaidCents = seen.reduce(
+    (s, x) => s + toCents(x.amount_paid),
     0,
   );
   const concessionsCents = seen.reduce(
@@ -124,10 +138,15 @@ export function computeSpendBreakdown(
 
   return {
     subscriptionsCents,
+    ticketsPaidCents,
     concessionsCents,
     extraTicketsCents,
     miscCents,
     totalCents:
-      subscriptionsCents + concessionsCents + extraTicketsCents + miscCents,
+      subscriptionsCents +
+      ticketsPaidCents +
+      concessionsCents +
+      extraTicketsCents +
+      miscCents,
   };
 }

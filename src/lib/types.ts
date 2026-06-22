@@ -16,6 +16,15 @@ export type ScreenFormat =
 
 export type ChargeSource = "auto" | "manual" | "onboarding";
 
+export const ACQUISITIONS = [
+  "membership",
+  "voucher",
+  "full_price",
+  "comp",
+  "other",
+] as const;
+export type Acquisition = (typeof ACQUISITIONS)[number];
+
 export interface Theater {
   id: string;
   user_id: string;
@@ -81,6 +90,9 @@ export interface Screening {
   misc_spend: number | null;
   additional_tickets: number;
   additional_tickets_cost: number | null;
+
+  amount_paid: number;
+  acquisition: Acquisition | null;
 
   rating: number | null;
   tags: string[];
