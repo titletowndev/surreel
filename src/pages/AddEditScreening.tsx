@@ -6,6 +6,7 @@ import { TmdbSearch } from "@/components/screening/TmdbSearch";
 import { Poster } from "@/components/ui/primitives";
 import { getMovieMeta, type MovieMeta, type TmdbSearchResult } from "@/lib/tmdb";
 import { searchTheaters, inferChain, type PlaceTheater } from "@/lib/places";
+import { suggestTicketValue } from "@/lib/ticketValue";
 import {
   SCREEN_FORMATS,
   CHAINS,
@@ -102,12 +103,14 @@ export function AddEditScreening() {
     updateScreening,
     deleteScreening,
     addTheater,
+    priceTable,
   } = useData();
 
   const [form, setForm] = useState<FormState>(emptyForm);
   const [enriching, setEnriching] = useState(false);
   const [showFixMatch, setShowFixMatch] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [ticketTouched, setTicketTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Default the membership program to the first one available.
@@ -159,6 +162,24 @@ export function AddEditScreening() {
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
+
+  // Suggest a default Ticket Value: carry forward the user's own most recent
+  // comparable ticket, falling back to a tier-based estimate once a theater is
+  // chosen. New screenings only, and only until the field is edited by hand.
+  useEffect(() => {
+    if (isEdit || ticketTouched) return;
+    const suggestion = suggestTicketValue({
+      theaterId: form.theater_id,
+      screenFormat: form.screen_format,
+      is3d: form.is_3d,
+      isPlf: form.is_plf,
+      theaters,
+      screenings,
+      priceTable,
+    });
+    if (suggestion != null) set("ticket_value", suggestion.toFixed(2));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.theater_id, form.screen_format, form.is_3d, form.is_plf, isEdit, ticketTouched, theaters, screenings, priceTable]);
 
   function applyMeta(meta: MovieMeta) {
     setForm((f) => ({
@@ -383,7 +404,7 @@ export function AddEditScreening() {
         label="Ticket Value"
         hint="The face value you'd have paid for this exact showtime & format (so IMAX, Dolby, etc. are captured). This — not the fee — is the headline savings figure."
       >
-        <MoneyInput value={form.ticket_value} onChange={(v) => set("ticket_value", v)} />
+        <MoneyInput value={form.ticket_value} onChange={(v) => { setTicketTouched(true); set("ticket_value", v); }} />
       </Field>
 
       <Field label="Fees Saved" hint="Booking/convenience fee your membership waived. Tracked separately from the headline savings.">
