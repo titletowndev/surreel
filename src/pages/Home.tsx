@@ -49,21 +49,24 @@ export function Home() {
             >
               {money(savings.netSavingsCents)}
             </div>
+            <div className="nums mt-2 text-xs font-medium text-bone-dim">
+              {money(savings.grossTicketValueCents)} value − {money(savings.totalSpentCents)} spent = {money(savings.netSavingsCents)} saved
+            </div>
             <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start">
               <span className={`pill ${savings.breakEven ? "pill-amber" : ""}`}>
-                {savings.breakEven ? "Ahead of membership" : "Not yet broken even"}
+                {savings.breakEven ? "Net positive" : "Not yet net positive"}
               </span>
               <span className="pill">+{money(savings.bonusFeesSavedCents)} waived fees</span>
             </div>
           </div>
-          <Ring value={savings.pctSavings} label={percent(savings.pctSavings)} sub="Saved" />
+          <Ring value={savings.pctSavings} label={percent(savings.pctSavings)} sub="of value saved" />
         </div>
       </section>
 
       {/* Stat grid */}
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <StatTile label="Ticket Value" value={money(savings.grossTicketValueCents)} />
-        <StatTile label="Total Spent" value={money(savings.totalSpentCents)} />
+        <StatTile label="Total Spent" value={<span className="text-sys-orange">{money(savings.totalSpentCents)}</span>} />
         <StatTile
           label="Cost Per Movie"
           value={money(savings.costPerMovieCents)}
@@ -164,7 +167,7 @@ function PreviewHead({
       <h3 className="text-base font-semibold tracking-[-0.02em] text-bone">{title}</h3>
       <div className="text-right">
         <div className={`display nums text-xl ${tone === "good" ? "text-positive" : "text-bone"}`}>{stat}</div>
-        <div className="text-[10px] font-semibold uppercase tracking-wide text-bone-faint">{statLabel}</div>
+        <div className="text-[10px] font-semibold uppercase tracking-wide text-bone-dim">{statLabel}</div>
       </div>
     </div>
   );

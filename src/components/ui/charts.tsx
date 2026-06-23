@@ -67,7 +67,7 @@ export function Ring({
           {label}
         </span>
         {sub && (
-          <span className="mt-1 text-[10px] font-semibold uppercase tracking-widest text-bone-faint">
+          <span className="mt-1 text-[10px] font-semibold uppercase tracking-widest text-bone-dim">
             {sub}
           </span>
         )}
