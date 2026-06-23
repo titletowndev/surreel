@@ -62,7 +62,7 @@ function Chrome({ children }: { children: React.ReactNode }) {
                 end={t.to === "/"}
                 className={({ isActive }) =>
                   `flex flex-1 flex-col items-center gap-1 rounded-2xl py-1.5 text-[11px] font-semibold transition-colors ${
-                    isActive ? "text-bone" : "text-bone-faint hover:text-bone-dim"
+                    isActive ? "text-bone" : "text-bone-dim hover:text-bone"
                   }`
                 }
               >

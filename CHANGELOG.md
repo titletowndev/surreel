@@ -4,6 +4,21 @@ Curated ship log, newest first. The repo is canonical: read from a fresh
 clone, prepend new entries under the header, never rewrite or reorder
 existing ones.
 
+## 2026-06-22 − fees-tile
+(this push)
+- Home: moved waived fees out of the hero pill into a dedicated Fees Waived
+  line below the stat grid, keeping the bonus stat separate from net savings.
+- Nav: inactive bottom-nav labels bumped from bone-faint to bone-dim for
+  legibility.
+- Files: src/pages/Home.tsx, src/App.tsx. No migration.
+
+## 2026-06-22 − recent
+(this push)
+- Home: Recently watched strip − the last 3 in-period screenings
+  (poster, title, theater · date, saved), each linking to its detail page.
+- Engine: added screeningSavedCents() to savings.ts (pure, integer cents).
+- Files: src/pages/Home.tsx, src/engine/savings.ts. No migration.
+
 ## 2026-06-22 − reel-reads
 (this push)
 - Home: a plain-English takeaway under each Reel Story card (How I Spend /

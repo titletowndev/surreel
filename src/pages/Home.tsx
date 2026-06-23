@@ -10,9 +10,11 @@ import {
   computeSpendBreakdown,
   seenInPeriod,
   bestValueScreening,
+  screeningSavedCents,
 } from "@/engine/savings";
 import { watchStats, placeStats, timeStats } from "@/engine/stats";
 import { money, percent, hoursDecimal } from "@/lib/format";
+import { format, parseISO } from "date-fns";
 
 export function Home() {
   const { screenings, charges, theaters, loading } = useData();
@@ -31,6 +33,14 @@ export function Home() {
   const place = useMemo(() => placeStats(seen, theaters), [seen, theaters]);
   const time = useMemo(() => timeStats(seen, new Date()), [seen]);
   const best = useMemo(() => bestValueScreening(seen), [seen]);
+  const recent = useMemo(
+    () => [...seen].sort((a, b) => (a.showtime < b.showtime ? 1 : -1)).slice(0, 3),
+    [seen],
+  );
+  const theaterById = useMemo(
+    () => new Map(theaters.map((t) => [t.id, t])),
+    [theaters],
+  );
   const reads = useMemo(() => {
     const slices = [
       { label: "subscription", cents: spend.subscriptionsCents },
@@ -82,7 +92,7 @@ export function Home() {
               <span className={`pill ${savings.breakEven ? "pill-amber" : ""}`}>
                 {savings.breakEven ? "Net positive" : "Not yet net positive"}
               </span>
-              <span className="pill">+{money(savings.bonusFeesSavedCents)} waived fees</span>
+              {/* fees-moved-to-tile */}
             </div>
           </div>
           <Ring value={savings.pctSavings} label={percent(savings.pctSavings)} sub="of value saved" />
@@ -106,6 +116,17 @@ export function Home() {
         <StatTile label="Movies Watched" value={savings.moviesWatched} />
         <StatTile label="Hours Watched" value={hoursDecimal(savings.totalRuntimeMin)} />
       </section>
+
+      {savings.bonusFeesSavedCents > 0 && (
+        <div className="card flex items-center justify-between px-5 py-3">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-bone-dim">
+            Fees Waived
+          </span>
+          <span className="nums text-sm font-semibold text-bone">
+            +{money(savings.bonusFeesSavedCents)}
+          </span>
+        </div>
+      )}
 
       {loading && (
         <p className="text-center text-sm text-bone-faint">Syncing your ledger…</p>
@@ -133,6 +154,47 @@ export function Home() {
             </div>
           </div>
         </Link>
+      )}
+
+      {recent.length > 0 && (
+        <section className="card p-5">
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-bone-dim">
+            Recently watched
+          </div>
+          <div className="mt-3 space-y-3">
+            {recent.map((s) => {
+              const saved = screeningSavedCents(s);
+              const venue = s.theater_id ? theaterById.get(s.theater_id)?.name ?? null : null;
+              return (
+                <Link
+                  key={s.id}
+                  to={`/movie/${s.id}`}
+                  className="-mx-2 flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-white/[0.04]"
+                >
+                  <Poster
+                    path={s.poster_path}
+                    title={s.title}
+                    size="w92"
+                    className="h-12 w-8 shrink-0 rounded-md object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-sm font-semibold text-bone">{s.title}</div>
+                    <div className="truncate text-xs text-bone-dim">
+                      {[venue, format(parseISO(s.showtime), "MMM d")].filter(Boolean).join(" · ")}
+                    </div>
+                  </div>
+                  <div
+                    className={`nums shrink-0 text-xs font-semibold ${
+                      saved >= 0 ? "text-positive" : "text-negative"
+                    }`}
+                  >
+                    {money(saved, { sign: true })}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
       )}
 
       {/* Analytics drill-downs */}

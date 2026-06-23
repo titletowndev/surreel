@@ -163,6 +163,15 @@ export interface BestValue {
   savedCents: number;
 }
 
+export function screeningSavedCents(s: Screening): number {
+  return (
+    toCents(s.ticket_value) +
+    toCents(s.additional_tickets_value) -
+    toCents(s.amount_paid) -
+    toCents(s.additional_tickets_cost)
+  );
+}
+
 export function bestValueScreening(seen: Screening[]): BestValue | null {
   let best: BestValue | null = null;
   for (const s of seen) {
