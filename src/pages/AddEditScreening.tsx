@@ -356,7 +356,7 @@ export function AddEditScreening() {
       </Field>
 
       <Toggle
-        label="Planned (upcoming) — not seen yet"
+        label="Booked — not seen yet"
         checked={form.is_upcoming}
         onChange={(v) => set("is_upcoming", v)}
       />

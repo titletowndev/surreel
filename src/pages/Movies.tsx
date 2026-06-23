@@ -93,7 +93,7 @@ export function Movies() {
         <>
           {upcoming.length > 0 && (
             <section>
-              <h2 className="display mb-2 text-sm text-amber">Upcoming</h2>
+              <h2 className="display mb-2 text-sm text-amber">Booked</h2>
               <div className="space-y-2">
                 {upcoming.map((s) => (
                   <ScreeningRow key={s.id} screening={s} theater={s.theater_id ? theaterById.get(s.theater_id) : undefined} upcoming />

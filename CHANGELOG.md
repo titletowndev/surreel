@@ -4,6 +4,12 @@ Curated ship log, newest first. The repo is canonical: read from a fresh
 clone, prepend new entries under the header, never rewrite or reorder
 existing ones.
 
+## 2026-06-23 − booked-label
+(this push)
+- Movies: the upcoming section header now reads "Booked" − these are confirmed tickets, not a wishlist.
+- Add/Edit: the not-seen-yet toggle now reads "Booked — not seen yet" (was "Planned (upcoming)").
+- Files: src/pages/Movies.tsx, src/pages/AddEditScreening.tsx. No migration.
+
 ## 2026-06-22 − dedupe-theaters
 (this push)
 - addTheater now reuses an existing theater when a normalized name + city +
