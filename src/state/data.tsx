@@ -211,6 +211,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
     },
 
     async addTheater(input) {
+      const norm = (v: string | null | undefined) => (v ?? "").trim().toLowerCase();
+      const dup = theaters.find(
+        (t) =>
+          norm(t.name) === norm(input.name) &&
+          norm(t.city) === norm(input.city) &&
+          norm(t.state) === norm(input.state),
+      );
+      if (dup) return dup;
       if (demo) {
         const row: Theater = { ...input, id: uid(), user_id: "demo-user", created_at: new Date().toISOString() };
         setTheaters((xs) => [...xs, row].sort((a, b) => a.name.localeCompare(b.name)));

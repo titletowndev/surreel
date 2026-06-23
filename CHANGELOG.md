@@ -4,6 +4,14 @@ Curated ship log, newest first. The repo is canonical: read from a fresh
 clone, prepend new entries under the header, never rewrite or reorder
 existing ones.
 
+## 2026-06-22 − dedupe-theaters
+(this push)
+- addTheater now reuses an existing theater when a normalized name + city +
+  state match, instead of inserting a new row on every autocomplete pick.
+- Prevents new duplicate theaters; existing dupes still need a one-time
+  manual merge in the Supabase Table Editor.
+- Files: src/state/data.tsx. No migration.
+
 ## 2026-06-22 − fees-tile
 (this push)
 - Home: moved waived fees out of the hero pill into a dedicated Fees Waived
