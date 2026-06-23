@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import { useData } from "@/state/data";
 import { usePeriod } from "@/state/period";
 import { PeriodSwitcher } from "@/components/ui/PeriodSwitcher";
-import { StatTile, SectionTitle } from "@/components/ui/primitives";
+import { StatTile, SectionTitle, Poster } from "@/components/ui/primitives";
 import { Ring, BarList, VBars, Donut, SPEND_COLORS } from "@/components/ui/charts";
 import {
   computeSavings,
   computeSpendBreakdown,
   seenInPeriod,
+  bestValueScreening,
 } from "@/engine/savings";
 import { watchStats, placeStats, timeStats } from "@/engine/stats";
 import { money, percent, hoursDecimal } from "@/lib/format";
@@ -29,6 +30,31 @@ export function Home() {
   const watch = useMemo(() => watchStats(seen), [seen]);
   const place = useMemo(() => placeStats(seen, theaters), [seen, theaters]);
   const time = useMemo(() => timeStats(seen, new Date()), [seen]);
+  const best = useMemo(() => bestValueScreening(seen), [seen]);
+  const reads = useMemo(() => {
+    const slices = [
+      { label: "subscription", cents: spend.subscriptionsCents },
+      { label: "tickets", cents: spend.ticketsPaidCents + spend.extraTicketsCents },
+      { label: "concessions", cents: spend.concessionsCents },
+      { label: "misc", cents: spend.miscCents },
+    ];
+    const top = slices.reduce((a, b) => (b.cents > a.cents ? b : a));
+    const spendRead =
+      spend.totalCents > 0
+        ? `Mostly ${top.label}: ${money(top.cents)} of ${money(spend.totalCents)}.`
+        : "No spend logged yet.";
+    const g0 = watch.topGenres[0];
+    const watchRead = g0 ? `${g0.label} leads with ${g0.count}.` : "No genres tagged yet.";
+    const t0 = place.theaterVisits[0];
+    const whereRead = t0 ? `Most at ${t0.label} (${t0.count}).` : "No theaters logged yet.";
+    const whenRead =
+      time.currentStreakWeeks >= 1
+        ? `Current streak: ${time.currentStreakWeeks} ${time.currentStreakWeeks === 1 ? "week" : "weeks"}.`
+        : time.mostFrequentDay
+          ? `Mostly ${time.mostFrequentDay}s.`
+          : "No screenings yet.";
+    return { spendRead, watchRead, whereRead, whenRead };
+  }, [spend, watch, place, time]);
 
   return (
     <div className="space-y-7">
@@ -85,6 +111,30 @@ export function Home() {
         <p className="text-center text-sm text-bone-faint">Syncing your ledger…</p>
       )}
 
+      {best && (
+        <Link to={`/movie/${best.screening.id}`} className="card card-hover block p-5">
+          <div className="flex items-center gap-4">
+            <Poster
+              path={best.screening.poster_path}
+              title={best.screening.title}
+              size="w154"
+              className="h-[4.6rem] w-[3.1rem] shrink-0 rounded-lg object-cover"
+            />
+            <div className="min-w-0 flex-1">
+              <div className="text-[10px] font-semibold uppercase tracking-wide text-bone-dim">
+                Best value so far
+              </div>
+              <div className="mt-0.5 truncate text-base font-semibold text-bone">
+                {best.screening.title}
+              </div>
+              <div className="nums mt-1 text-xs font-medium text-bone-dim">
+                {money(best.valueCents)} value · {money(best.paidCents)} paid · <span className="text-positive">{money(best.savedCents)} saved</span>
+              </div>
+            </div>
+          </div>
+        </Link>
+      )}
+
       {/* Analytics drill-downs */}
       <section className="space-y-4">
         <SectionTitle>The Reel Story</SectionTitle>
@@ -104,6 +154,7 @@ export function Home() {
                 ]}
               />
             </div>
+            <Takeaway text={reads.spendRead} />
           </Link>
 
           {/* What I Watch */}
@@ -118,6 +169,7 @@ export function Home() {
                 items={watch.topGenres.slice(0, 4).map((g) => ({ label: g.label, value: g.count }))}
               />
             </div>
+            <Takeaway text={reads.watchRead} />
           </Link>
 
           {/* Where I Watch */}
@@ -132,6 +184,7 @@ export function Home() {
                 items={place.theaterVisits.slice(0, 4).map((t) => ({ label: t.label, value: t.count }))}
               />
             </div>
+            <Takeaway text={reads.whereRead} />
           </Link>
 
           {/* When I Watched */}
@@ -144,6 +197,7 @@ export function Home() {
             <div className="mt-3">
               <VBars items={time.byDay.map((d) => ({ label: d.label[0] ?? "", value: d.count }))} />
             </div>
+            <Takeaway text={reads.whenRead} />
           </Link>
         </div>
       </section>
@@ -171,4 +225,8 @@ function PreviewHead({
       </div>
     </div>
   );
+}
+
+function Takeaway({ text }: { text: string }) {
+  return <p className="mt-3 text-xs font-medium leading-snug text-bone-dim">{text}</p>;
 }

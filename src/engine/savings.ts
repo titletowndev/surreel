@@ -150,3 +150,30 @@ export function computeSpendBreakdown(
       miscCents,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Best value − the single screening with the highest retail-minus-paid spread.
+// Per-screening, membership monthly fee is a period-level offset, not assignable
+// to one row, so saved here is (value) - (out of pocket) for that seat + guests.
+// ---------------------------------------------------------------------------
+export interface BestValue {
+  screening: Screening;
+  valueCents: number;
+  paidCents: number;
+  savedCents: number;
+}
+
+export function bestValueScreening(seen: Screening[]): BestValue | null {
+  let best: BestValue | null = null;
+  for (const s of seen) {
+    const valueCents =
+      toCents(s.ticket_value) + toCents(s.additional_tickets_value);
+    const paidCents =
+      toCents(s.amount_paid) + toCents(s.additional_tickets_cost);
+    const savedCents = valueCents - paidCents;
+    if (!best || savedCents > best.savedCents) {
+      best = { screening: s, valueCents, paidCents, savedCents };
+    }
+  }
+  return best;
+}

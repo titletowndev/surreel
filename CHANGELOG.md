@@ -4,6 +4,16 @@ Curated ship log, newest first. The repo is canonical: read from a fresh
 clone, prepend new entries under the header, never rewrite or reorder
 existing ones.
 
+## 2026-06-22 − reel-reads
+(this push)
+- Home: a plain-English takeaway under each Reel Story card (How I Spend /
+  What I Watch / Where I Watch / When I Watched).
+- New Best Value card: the single screening with the highest
+  retail-minus-paid spread, linking to its detail page.
+- Engine: added bestValueScreening() to savings.ts (pure, integer cents;
+  the period savings formula is untouched).
+- Files: src/pages/Home.tsx, src/engine/savings.ts. No migration.
+
 ## 2026-06-22 − home-ledger
 (this push)
 - Home: ledger equation under the hero number, value − spent = saved. Display only; engine untouched.
