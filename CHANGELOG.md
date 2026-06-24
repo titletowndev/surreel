@@ -4,6 +4,13 @@ Curated ship log, newest first. The repo is canonical: read from a fresh
 clone, prepend new entries under the header, never rewrite or reorder
 existing ones.
 
+## 2026-06-24 − credits-detail-rows
+(this push)
+- ScreeningDetail now always shows During-credits and After-credits as their own rows (Yes / No / Not marked), instead of one combined row that stayed
+  hidden until a film was marked. The detail view tells you the stinger status even on unmarked films.
+- Not marked renders faint; Yes / No render normal. Display only — builds on the credits-scenes columns.
+- File: src/pages/ScreeningDetail.tsx. No migration.
+
 ## 2026-06-24 − credits-pill
 (this push)
 - Movies list rows now show a teal credits pill on any screening marked with a during- or after-credits scene, so stingers are visible at a glance without
