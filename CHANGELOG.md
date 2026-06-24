@@ -4,6 +4,13 @@ Curated ship log, newest first. The repo is canonical: read from a fresh
 clone, prepend new entries under the header, never rewrite or reorder
 existing ones.
 
+## 2026-06-24 − prime-format
+(this push)
+- New screen format: "Prime at AMC" added to the ScreenFormat union and SCREEN_FORMATS, so it appears in the Add/Edit format picker and flows
+  through formatMix / Rewind automatically.
+- ticketValue: Prime at AMC gets a +5 retail upcharge (same tier as Dolby) and is excluded from the standalone PLF-toggle double-count.
+- Files: src/lib/types.ts, src/lib/ticketValue.ts. No migration (screen_format is app-enforced free text).
+
 ## 2026-06-23 − inapp-brand
 (this push)
 - Header: the placeholder circle-dot + system-font Surreel is replaced with

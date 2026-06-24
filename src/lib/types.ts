@@ -12,6 +12,7 @@ export type ScreenFormat =
   | "RealD3D"
   | "PLF"
   | "ScreenX"
+  | "Prime at AMC"
   | "Other";
 
 export type ChargeSource = "auto" | "manual" | "onboarding";
@@ -124,7 +125,7 @@ export const US_STATES: readonly string[] = [
 ];
 
 export const SCREEN_FORMATS: readonly ScreenFormat[] = [
-  "Standard","IMAX","Dolby","RealD3D","PLF","ScreenX","Other",
+  "Standard","IMAX","Dolby","RealD3D","PLF","ScreenX","Prime at AMC","Other",
 ];
 
 export const CHAINS: readonly Chain[] = ["AMC", "Regal", "Other"];

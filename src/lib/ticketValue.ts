@@ -34,8 +34,9 @@ function formatUpcharge(fmt: ScreenFormat, is3d: boolean, isPlf: boolean): numbe
   else if (fmt === "Dolby") up += 5;
   else if (fmt === "ScreenX") up += 5;
   else if (fmt === "PLF") up += 4;
+  else if (fmt === "Prime at AMC") up += 5;
   // Separate PLF toggle, when the format itself isn't already large-format.
-  if (isPlf && fmt !== "PLF" && fmt !== "IMAX" && fmt !== "Dolby") up += 4;
+  if (isPlf && fmt !== "PLF" && fmt !== "IMAX" && fmt !== "Dolby" && fmt !== "Prime at AMC") up += 4;
   // 3D surcharge (either the RealD3D format or the standalone 3D toggle).
   if (is3d || fmt === "RealD3D") up += 3;
   return up;
