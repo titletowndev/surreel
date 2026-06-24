@@ -4,6 +4,14 @@ Curated ship log, newest first. The repo is canonical: read from a fresh
 clone, prepend new entries under the header, never rewrite or reorder
 existing ones.
 
+## 2026-06-24 − screen-format-check (fix)
+(this push)
+- Fix: editing/adding a screening with format "Prime at AMC" silently failed to save — the live DB still had the 0001 single-quoted screen_format CHECK
+  enum, which did not include the new value, so the UPDATE/INSERT was rejected.
+- Migration 0005_drop_screen_format_check: drops constraint screenings_screen_format_check. screen_format is now enforced app-side only
+  (ScreenFormat union), per project rules — future formats need no migration.
+- DB only; no code change. Adding formats app-side is now sufficient.
+
 ## 2026-06-24 − prime-format
 (this push)
 - New screen format: "Prime at AMC" added to the ScreenFormat union and SCREEN_FORMATS, so it appears in the Add/Edit format picker and flows
