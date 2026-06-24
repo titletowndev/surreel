@@ -4,6 +4,20 @@ Curated ship log, newest first. The repo is canonical: read from a fresh
 clone, prepend new entries under the header, never rewrite or reorder
 existing ones.
 
+## 2026-06-23 − monogram-icons
+(this push)
+- Favicon / app-icon / PWA: replaced the legacy reel.svg favicon with the
+  Surreel S-monogram set (GT Sectra S, gold reel jewel, teal plus). Favicon
+  uses the S-only reduction for tab legibility; app / PWA / apple-touch use
+  the full monogram.
+- Added under public/: favicon.svg, favicon.ico, favicon-16.png,
+  favicon-32.png, apple-touch-icon.png, icon-192.png, icon-512.png,
+  icon-192-maskable.png, icon-512-maskable.png, site.webmanifest.
+- index.html: repointed icon links, added apple-touch + manifest,
+  theme-color -> #02060F.
+- Brand: every mark derives verbatim from the v7 lockup (icon / reel /
+  S-glyph hash-matched). No app code, no migration.
+
 ## 2026-06-23 − booked-label
 (this push)
 - Movies: the upcoming section header now reads "Booked" − these are confirmed tickets, not a wishlist.
