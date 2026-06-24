@@ -144,6 +144,7 @@ function ScreeningRow({
   theater: Theater | undefined;
   upcoming?: boolean;
 }) {
+  const stinger = stingerLabel(s);
   return (
     <Link
       to={`/movie/${s.id}`}
@@ -168,11 +169,23 @@ function ScreeningRow({
             {format(parseISO(s.showtime), upcoming ? "EEE MMM d · h:mma" : "MMM d, yyyy")}
           </span>
           <span className="pill">{formatLabel(s)}</span>
+          {stinger && (
+            <span className="pill border-sys-teal/30 bg-sys-teal/[0.12] text-sys-teal">{stinger}</span>
+          )}
           {s.rating != null && <span className="pill">★ {s.rating}</span>}
         </div>
       </div>
     </Link>
   );
+}
+
+function stingerLabel(s: Screening): string | null {
+  const d = s.during_credits === true;
+  const a = s.after_credits === true;
+  if (d && a) return "During + after credits";
+  if (d) return "During-credits";
+  if (a) return "After-credits";
+  return null;
 }
 
 function formatLabel(s: Screening): string {
