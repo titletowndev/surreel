@@ -12,6 +12,7 @@ import { HowISpend } from "@/pages/analytics/HowISpend";
 import { WhatIWatch } from "@/pages/analytics/WhatIWatch";
 import { WhereIWatch } from "@/pages/analytics/WhereIWatch";
 import { WhenIWatched } from "@/pages/analytics/WhenIWatched";
+import { ReelMark, Wordmark } from "@/components/ui/brand";
 
 const TABS = [
   { to: "/", label: "Home", icon: "◉" },
@@ -28,11 +29,9 @@ function Chrome({ children }: { children: React.ReactNode }) {
     <div className="mx-auto flex min-h-screen max-w-3xl flex-col px-[18px]">
       <header className="sticky top-0 z-30 -mx-[18px] flex items-center justify-between px-[18px] py-4"
         style={{ background: "linear-gradient(#000 35%, rgba(0,0,0,0))" }}>
-        <Link to="/" className="flex items-center gap-2.5">
-          <span className="relative h-[25px] w-[25px] rounded-full border-[1.5px] border-bone/90">
-            <span className="absolute inset-[7px] rounded-full bg-bone/90" />
-          </span>
-          <span className="text-[19px] font-semibold tracking-[-0.01em] text-bone">Surreel</span>
+        <Link to="/" className="flex items-center gap-2.5 text-bone">
+          <ReelMark size={26} />
+          <Wordmark className="h-[20px] w-auto" />
         </Link>
         <Link
           to="/settings"
@@ -83,7 +82,7 @@ export default function App() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="display animate-flicker text-2xl text-amber">Surreel</div>
+        <div className="animate-flicker text-amber"><Wordmark className="h-[34px] w-auto" /></div>
       </div>
     );
   }

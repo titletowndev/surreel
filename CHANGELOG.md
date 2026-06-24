@@ -4,6 +4,15 @@ Curated ship log, newest first. The repo is canonical: read from a fresh
 clone, prepend new entries under the header, never rewrite or reorder
 existing ones.
 
+## 2026-06-23 − inapp-brand
+(this push)
+- Header: the placeholder circle-dot + system-font Surreel is replaced with
+  the gold reel mark + the GT Sectra Surreel wordmark (outlined SVG, no font
+  file). Loading splash uses the same wordmark.
+- New: src/components/ui/brand.tsx exporting ReelMark + Wordmark, both
+  verbatim v7 geometry (reel e0f28d2d, wordmark 20dd3299), fill currentColor.
+- Files: src/App.tsx, src/components/ui/brand.tsx. No migration.
+
 ## 2026-06-23 − monogram-icons
 (this push)
 - Favicon / app-icon / PWA: replaced the legacy reel.svg favicon with the
