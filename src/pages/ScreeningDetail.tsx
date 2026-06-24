@@ -103,6 +103,12 @@ export function ScreeningDetail() {
       .filter(Boolean)
       .join(" · ") || "Standard";
   const metaLine = [runtime, s.mpaa_rating].filter(Boolean).join(" · ");
+  const creditsLine = [
+    s.during_credits == null ? null : `During-credits ${s.during_credits ? "yes" : "no"}`,
+    s.after_credits == null ? null : `After-credits ${s.after_credits ? "yes" : "no"}`,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   const additionalValue = s.additional_tickets_value ?? 0;
   const additionalPaid = s.additional_tickets_cost ?? 0;
@@ -186,6 +192,7 @@ export function ScreeningDetail() {
           value={theater ? `${theater.name}${theater.state ? ` · ${theater.state}` : ""}` : "—"}
         />
         <Row label="Format" value={formatLine} />
+        {creditsLine && <Row label="Credits scene" value={creditsLine} />}
         <Row label="Membership" value={program ? program.name : "None"} />
         <Row label="Ticket value" value={usd(s.ticket_value)} />
         <Row label="Amount paid" value={usd(s.amount_paid)} />

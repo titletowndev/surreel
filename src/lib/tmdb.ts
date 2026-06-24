@@ -40,6 +40,7 @@ export interface TmdbMovieDetail {
   release_dates?: {
     results: { iso_3166_1: string; release_dates: TmdbReleaseDate[] }[];
   };
+  keywords?: { keywords: { id: number; name: string }[] };
 }
 
 /** Normalised, app-ready movie metadata derived from a TMDB detail payload. */
@@ -53,6 +54,8 @@ export interface MovieMeta {
   director: string | null;
   mpaa_rating: string | null;
   genres: string[];
+  during_credits: boolean | null;
+  after_credits: boolean | null;
   overview: string | null;
 }
 
@@ -91,9 +94,31 @@ export async function searchMovies(query: string): Promise<TmdbSearchResult[]> {
   return data.results.slice(0, 8);
 }
 
+/**
+ * TMDB keywords are community-contributed, so a stinger keyword ASSERTS a
+ * scene but its absence proves nothing. We therefore only ever pre-fill
+ * `true`; "no scene" stays the user's call (null = unmarked until they say).
+ */
+function deriveStingers(
+  keywords: { name: string }[] | undefined,
+): { during_credits: boolean | null; after_credits: boolean | null } {
+  let during = false;
+  let after = false;
+  for (const k of keywords ?? []) {
+    const n = k.name.toLowerCase().replace(/[^a-z]/g, "");
+    if (!n.includes("credit")) continue;
+    if (n.includes("during") || n.includes("mid")) during = true;
+    if (n.includes("after") || n.includes("post")) after = true;
+  }
+  return {
+    during_credits: during ? true : null,
+    after_credits: after ? true : null,
+  };
+}
+
 export async function getMovieMeta(tmdbId: number): Promise<MovieMeta> {
   const d = await tmdbGet<TmdbMovieDetail>(`movie/${tmdbId}`, {
-    append_to_response: "credits,release_dates",
+    append_to_response: "credits,release_dates,keywords",
   });
 
   const director =
@@ -103,6 +128,8 @@ export async function getMovieMeta(tmdbId: number): Promise<MovieMeta> {
   const us = d.release_dates?.results.find((r) => r.iso_3166_1 === "US");
   const mpaa =
     us?.release_dates.find((r) => r.certification)?.certification ?? null;
+
+  const stingers = deriveStingers(d.keywords?.keywords);
 
   return {
     tmdb_id: d.id,
@@ -115,6 +142,8 @@ export async function getMovieMeta(tmdbId: number): Promise<MovieMeta> {
     mpaa_rating: mpaa && mpaa.length ? mpaa : null,
     genres: d.genres.map((g) => g.name),
     overview: d.overview,
+    during_credits: stingers.during_credits,
+    after_credits: stingers.after_credits,
   };
 }
 

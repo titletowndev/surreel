@@ -72,6 +72,8 @@ export interface Screening {
   director: string | null;
   mpaa_rating: string | null;
   genres: string[];
+  during_credits: boolean | null;
+  after_credits: boolean | null;
 
   theater_id: string | null;
   screen_format: ScreenFormat;

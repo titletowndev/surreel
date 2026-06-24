@@ -28,6 +28,8 @@ interface FormState {
   director: string | null;
   mpaa_rating: string | null;
   genres: string[];
+  during_credits: boolean | null;
+  after_credits: boolean | null;
   theater_id: string | null;
   screen_format: ScreenFormat;
   format_details: string;
@@ -67,6 +69,8 @@ function emptyForm(): FormState {
     director: null,
     mpaa_rating: null,
     genres: [],
+    during_credits: null,
+    after_credits: null,
     theater_id: null,
     screen_format: "Standard",
     format_details: "",
@@ -152,6 +156,8 @@ export function AddEditScreening() {
       director: existing.director,
       mpaa_rating: existing.mpaa_rating,
       genres: existing.genres,
+      during_credits: existing.during_credits ?? null,
+      after_credits: existing.after_credits ?? null,
       theater_id: existing.theater_id,
       screen_format: existing.screen_format,
       format_details: existing.format_details ?? "",
@@ -214,6 +220,8 @@ export function AddEditScreening() {
       director: meta.director,
       mpaa_rating: meta.mpaa_rating,
       genres: meta.genres,
+      during_credits: meta.during_credits === true ? true : f.during_credits,
+      after_credits: meta.after_credits === true ? true : f.after_credits,
     }));
   }
 
@@ -258,6 +266,8 @@ export function AddEditScreening() {
       director: form.director,
       mpaa_rating: form.mpaa_rating,
       genres: form.genres,
+      during_credits: form.during_credits,
+      after_credits: form.after_credits,
       theater_id: form.theater_id,
       screen_format: form.screen_format,
       format_details: form.format_details.trim() || null,
@@ -398,6 +408,12 @@ export function AddEditScreening() {
       <div className="flex gap-4">
         <Toggle label="3D" checked={form.is_3d} onChange={(v) => set("is_3d", v)} />
         <Toggle label="PLF" checked={form.is_plf} onChange={(v) => set("is_plf", v)} />
+      </div>
+
+      <div className="card space-y-3 p-4">
+        <div className="text-xs uppercase tracking-wide text-bone-faint">Credits scenes</div>
+        <TriState label="During-credits scene" value={form.during_credits} onChange={(v) => set("during_credits", v)} />
+        <TriState label="After-credits scene" value={form.after_credits} onChange={(v) => set("after_credits", v)} />
       </div>
 
       <Field label="Membership Program">
@@ -571,6 +587,45 @@ function Stepper({ value, onChange }: { value: number; onChange: (v: number) => 
       <button type="button" onClick={() => onChange(value + 1)} className="btn-ghost h-10 w-10 !px-0">
         +
       </button>
+    </div>
+  );
+}
+
+function TriState({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: boolean | null;
+  onChange: (v: boolean | null) => void;
+}) {
+  const opts: { v: boolean | null; t: string }[] = [
+    { v: null, t: "Unmarked" },
+    { v: true, t: "Yes" },
+    { v: false, t: "No" },
+  ];
+  return (
+    <div className="flex items-center justify-between gap-3 text-sm text-bone-dim">
+      <span>{label}</span>
+      <div className="flex overflow-hidden rounded-full border border-ink-600">
+        {opts.map((o) => {
+          const active = value === o.v;
+          return (
+            <button
+              key={String(o.v)}
+              type="button"
+              aria-pressed={active}
+              onClick={() => onChange(o.v)}
+              className={`px-3 py-1 text-xs transition-colors ${
+                active ? "bg-amber text-white" : "text-bone-dim hover:text-bone"
+              }`}
+            >
+              {o.t}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

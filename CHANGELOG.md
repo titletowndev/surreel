@@ -4,6 +4,16 @@ Curated ship log, newest first. The repo is canonical: read from a fresh
 clone, prepend new entries under the header, never rewrite or reorder
 existing ones.
 
+## 2026-06-24 − credits-scenes
+(this push)
+- New per-screening during/after-credits tracking: two nullable booleans (during_credits, after_credits) on screenings. null = unmarked, true = has a
+  scene, false = confirmed none, so "not checked" stays distinct from "no scene."
+- Add/Edit gains a tri-state Credits scenes block (Unmarked / Yes / No). TMDB pre-fill: on movie pick/refresh, duringcreditsstinger / aftercreditsstinger
+  keywords pre-set the toggles to Yes; a missing keyword never forces No (community data asserts presence only). Pre-fill upgrades null to true, never overrides a manual mark.
+- ScreeningDetail shows a Credits scene row when either flag is marked.
+- Migration 0006_add_credits_scenes: adds both nullable boolean columns (add column if not exists). Engines untouched — display only.
+- Files: src/lib/types.ts, src/lib/tmdb.ts, src/lib/demo.ts, src/pages/AddEditScreening.tsx, src/pages/ScreeningDetail.tsx.
+
 ## 2026-06-24 − screen-format-check (fix)
 (this push)
 - Fix: editing/adding a screening with format "Prime at AMC" silently failed to save — the live DB still had the 0001 single-quoted screen_format CHECK

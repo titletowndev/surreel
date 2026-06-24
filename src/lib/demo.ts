@@ -120,6 +120,8 @@ function toScreening(s: Seed): Screening {
     director: s.director,
     mpaa_rating: s.mpaa,
     genres: s.genres,
+    during_credits: null,
+    after_credits: null,
     theater_id: s.theater,
     screen_format: s.format,
     format_details: s.details ?? null,
