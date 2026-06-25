@@ -13,7 +13,7 @@
  */
 import type { MembershipCharge, Screening } from "@/lib/types";
 import type { PeriodRange } from "@/lib/period";
-import { inPeriod } from "@/lib/period";
+import { inPeriod, isScreeningSeen } from "@/lib/period";
 import { toCents } from "@/lib/format";
 
 export interface SavingsSummary {
@@ -46,7 +46,7 @@ export function seenInPeriod(
   range: PeriodRange,
 ): Screening[] {
   return screenings.filter(
-    (s) => !s.is_upcoming && inPeriod(s.showtime, range),
+    (s) => isScreeningSeen(s) && inPeriod(s.showtime, range),
   );
 }
 

@@ -4,6 +4,7 @@ import { format, parseISO } from "date-fns";
 import { useData } from "@/state/data";
 import { Poster, EmptyState, SegmentedToggle } from "@/components/ui/primitives";
 import { runtimeShort } from "@/lib/format";
+import { isScreeningSeen, isScreeningUpcoming } from "@/lib/period";
 import type { Screening, Theater } from "@/lib/types";
 
 type SortKey = "date-desc" | "date-asc" | "title" | "rating";
@@ -34,12 +35,12 @@ export function Movies() {
   }, [screenings, query, sort]);
 
   const upcoming = useMemo(
-    () => filtered.filter((s) => s.is_upcoming).sort((a, b) => a.showtime.localeCompare(b.showtime)),
+    () => filtered.filter((s) => isScreeningUpcoming(s)).sort((a, b) => a.showtime.localeCompare(b.showtime)),
     [filtered],
   );
 
   const byYear = useMemo(() => {
-    const seen = filtered.filter((s) => !s.is_upcoming);
+    const seen = filtered.filter((s) => isScreeningSeen(s));
     const groups = new Map<number, Screening[]>();
     for (const s of seen) {
       const y = parseISO(s.showtime).getFullYear();
@@ -75,7 +76,7 @@ export function Movies() {
           ]}
         />
         <span className="text-xs text-bone-faint">
-          {filtered.filter((s) => !s.is_upcoming).length} logged
+          {filtered.filter((s) => isScreeningSeen(s)).length} logged
         </span>
       </div>
 

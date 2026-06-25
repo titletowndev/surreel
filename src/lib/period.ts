@@ -91,3 +91,24 @@ export function inPeriod(iso: string, range: PeriodRange): boolean {
   const d = new Date(iso);
   return isWithinInterval(d, { start: range.start, end: range.end });
 }
+
+/**
+ * Derived booked/seen state. A screening counts as upcoming only while it is
+ * still flagged booked AND its showtime is in the future. The moment the
+ * showtime passes it is treated as seen everywhere (Movies grouping, savings,
+ * Rewind, Screens) with no manual flip and no DB write. The stored is_upcoming
+ * flag stays the creation-time intent; the clock decides the rest.
+ */
+export function isScreeningSeen(
+  s: { is_upcoming: boolean; showtime: string },
+  now: Date = new Date(),
+): boolean {
+  return !s.is_upcoming || new Date(s.showtime).getTime() <= now.getTime();
+}
+
+export function isScreeningUpcoming(
+  s: { is_upcoming: boolean; showtime: string },
+  now: Date = new Date(),
+): boolean {
+  return !isScreeningSeen(s, now);
+}

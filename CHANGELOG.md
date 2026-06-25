@@ -4,6 +4,15 @@ Curated ship log, newest first. The repo is canonical: read from a fresh
 clone, prepend new entries under the header, never rewrite or reorder
 existing ones.
 
+## 2026-06-24 − booked-auto-seen
+(this push)
+- A booked screening now drops out of the Movies Booked section the moment its showtime passes, instead of sitting there until manually unchecked. Booked/seen
+  is derived from the clock, not just the stored flag: upcoming = is_upcoming AND showtime in the future.
+- One predicate (isScreeningSeen / isScreeningUpcoming in src/lib/period.ts) now drives Movies grouping + logged count, Rewind years, Screens, the savings
+  engine (seenInPeriod), and ticketValue suggestions, so every surface transitions together. Once a showtime passes its ticket_value counts toward savings.
+- No migration, no DB write, no job — purely reactive. The stored is_upcoming flag remains the creation-time intent.
+- Files: src/lib/period.ts, src/engine/savings.ts, src/lib/ticketValue.ts, src/pages/Movies.tsx, src/pages/Rewind.tsx, src/pages/Screens.tsx.
+
 ## 2026-06-24 − credits-detail-rows
 (this push)
 - ScreeningDetail now always shows During-credits and After-credits as their own rows (Yes / No / Not marked), instead of one combined row that stayed

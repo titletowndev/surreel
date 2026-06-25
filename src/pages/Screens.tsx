@@ -4,6 +4,7 @@ import { format, parseISO } from "date-fns";
 import { useData } from "@/state/data";
 import { SegmentedToggle, Poster, EmptyState } from "@/components/ui/primitives";
 import { backdropUrl } from "@/lib/tmdb";
+import { isScreeningSeen } from "@/lib/period";
 import type { Screening, ScreenFormat } from "@/lib/types";
 
 type Mode = "format" | "theater";
@@ -24,7 +25,7 @@ export function Screens() {
   const [mode, setMode] = useState<Mode>("format");
   const [openKey, setOpenKey] = useState<string | null>(null);
 
-  const seen = useMemo(() => screenings.filter((s) => !s.is_upcoming), [screenings]);
+  const seen = useMemo(() => screenings.filter((s) => isScreeningSeen(s)), [screenings]);
   const theaterById = useMemo(() => new Map(theaters.map((t) => [t.id, t])), [theaters]);
 
   const formatBuckets = useMemo(() => buildBuckets(seen, "format", theaterById), [seen, theaterById]);

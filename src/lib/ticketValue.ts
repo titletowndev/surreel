@@ -4,6 +4,7 @@ import type {
   ScreenFormat,
   Theater,
 } from "@/lib/types";
+import { isScreeningSeen } from "@/lib/period";
 
 /**
  * Suggest a default Ticket Value (the counterfactual "what one ticket would
@@ -69,7 +70,7 @@ export function suggestTicketValue(args: SuggestTicketValueArgs): number | null 
 
   // Most recent seen screenings that carry a real entered value.
   const seen = screenings
-    .filter((s) => Number(s.ticket_value) > 0 && !s.is_upcoming)
+    .filter((s) => Number(s.ticket_value) > 0 && isScreeningSeen(s))
     .slice()
     .sort((a, b) => b.showtime.localeCompare(a.showtime));
 

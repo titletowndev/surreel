@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { parseISO } from "date-fns";
 import { useData } from "@/state/data";
 import { EmptyState } from "@/components/ui/primitives";
-import { rangeFor } from "@/lib/period";
+import { rangeFor, isScreeningSeen } from "@/lib/period";
 import { computeSavings } from "@/engine/savings";
 import { watchStats, placeStats, timeStats } from "@/engine/stats";
 import { money, hoursDecimal, percent } from "@/lib/format";
@@ -13,7 +13,7 @@ export function Rewind() {
 
   const years = useMemo(() => {
     const set = new Set<number>();
-    for (const s of screenings) if (!s.is_upcoming) set.add(parseISO(s.showtime).getFullYear());
+    for (const s of screenings) if (isScreeningSeen(s)) set.add(parseISO(s.showtime).getFullYear());
     return [...set].sort((a, b) => b - a);
   }, [screenings]);
 
@@ -24,7 +24,7 @@ export function Rewind() {
     if (activeYear == null) return null;
     const range = rangeFor({ kind: "year", anchor: new Date(activeYear, 5, 1) });
     const seen = screenings.filter(
-      (s) => !s.is_upcoming && parseISO(s.showtime).getFullYear() === activeYear,
+      (s) => isScreeningSeen(s) && parseISO(s.showtime).getFullYear() === activeYear,
     );
     return {
       savings: computeSavings(screenings, charges, range),
